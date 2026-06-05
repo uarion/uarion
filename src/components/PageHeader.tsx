@@ -12,7 +12,7 @@ export default function PageHeader({
   return (
     <header className="mb-10">
       {badge && (
-        <p className="mb-3 text-sm font-medium uppercase tracking-widest text-accent">
+        <p className="text-page-eyebrow mb-3">
           {badge}
         </p>
       )}

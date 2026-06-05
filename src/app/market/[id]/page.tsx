@@ -47,7 +47,7 @@ export default async function MarketProductDetailPage({ params }: PageProps) {
           <p className="mb-8 text-2xl font-semibold text-slate-300">
             ₩{formatPrice(product.price)}
           </p>
-          <h2 className="mb-2 text-sm font-medium uppercase tracking-wide text-slate-500">
+          <h2 className="text-label mb-2 uppercase tracking-wide text-slate-500">
             상품 설명
           </h2>
           <p className="text-body-card text-slate-300">{product.description}</p>
@@ -60,7 +60,7 @@ export default async function MarketProductDetailPage({ params }: PageProps) {
                 {product.verificationScore}
               </span>
               <span className="text-slate-500">/ 100</span>
-              <span className="ml-2 text-sm text-slate-500">검증 점수</span>
+              <span className="text-label ml-2 text-slate-500">검증 점수</span>
             </div>
 
             <ul className="mb-6 space-y-4">

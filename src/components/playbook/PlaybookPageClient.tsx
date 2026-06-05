@@ -65,7 +65,7 @@ export default function PlaybookPageClient() {
     <div className="overflow-x-hidden bg-[#000510] text-slate-100">
       {/* 1 Hero */}
       <section className="page-container py-12 sm:py-16 lg:py-20">
-        <p className="inline-block rounded-full border border-[#0085FF]/40 bg-[#0085FF]/10 px-4 py-1.5 text-xs font-bold tracking-wider text-[#0085FF] sm:text-sm">
+        <p className="text-label inline-block rounded-full border border-[#0085FF]/40 bg-[#0085FF]/10 px-4 py-1.5 font-bold tracking-wider text-[#0085FF]">
           {t(pb.hero.badge)}
         </p>
         <h1 className="mt-6 max-w-4xl text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
@@ -84,7 +84,9 @@ export default function PlaybookPageClient() {
         <div className="grid gap-5 md:grid-cols-2">
           <div className="home-card flex flex-col p-6 sm:p-8">
             <h3 className="text-xl font-semibold text-white">{t(pb.featured.cardA.title)}</h3>
-            <p className="mt-2 text-[#0085FF]">{t(pb.featured.cardA.rating)}</p>
+            <p className="text-body-card mt-2 font-semibold text-[#0085FF]">
+              {t(pb.featured.cardA.rating)}
+            </p>
             <p className="text-body-card mt-1 text-slate-400">{t(pb.featured.cardA.stat)}</p>
             <p className="text-body-muted mt-1">{t(pb.featured.cardA.creator)}</p>
             <div className="mt-6">
@@ -98,7 +100,9 @@ export default function PlaybookPageClient() {
                 {t(pb.featured.cardB.premium)}
               </span>
             </div>
-            <p className="mt-2 text-[#0085FF]">{t(pb.featured.cardB.rating)}</p>
+            <p className="text-body-card mt-2 font-semibold text-[#0085FF]">
+              {t(pb.featured.cardB.rating)}
+            </p>
             <p className="text-body-card mt-1 text-slate-400">{t(pb.featured.cardB.stat)}</p>
           </div>
         </div>

@@ -18,6 +18,28 @@ body {
   text-rendering: geometricPrecision;
 }
 
+/*
+ * UARION 본문 타이포 스케일 (메인 홈 기준, CSS 변수)
+ * --uarion-body: 16px → 18px (sm) → 20px (lg)
+ * --uarion-body-card: 18px → 20px (sm) → 24px (lg)
+ * --uarion-label: 16px → 18px (sm) → 20px (lg)
+ * --uarion-body-muted: 14px → 16px (sm) → 18px (lg)
+ */
+:root {
+  --uarion-body: 1rem;
+  --uarion-body-sm: 1.125rem;
+  --uarion-body-lg: 1.25rem;
+  --uarion-body-card: 1.125rem;
+  --uarion-body-card-sm: 1.25rem;
+  --uarion-body-card-lg: 1.5rem;
+  --uarion-label: 1rem;
+  --uarion-label-sm: 1.125rem;
+  --uarion-label-lg: 1.25rem;
+  --uarion-body-muted: 0.875rem;
+  --uarion-body-muted-sm: 1rem;
+  --uarion-body-muted-lg: 1.125rem;
+}
+
 /* 홈·헤더·푸터 — 큰 화면에서 넓고 선명하게 */
 @layer components {
   .page-container {
@@ -32,23 +54,83 @@ body {
     @apply rounded-xl border border-white/[0.14] bg-[#0c1528];
   }
 
-  /* 본문 타이포 — 메인 홈 기준 (Tailwind: base=16px, lg=18px, xl=20px, 2xl=24px) */
+  /* 본문 — var(--uarion-body*): 16→18→20px */
   .text-body {
-    @apply text-base leading-relaxed text-slate-300 sm:text-lg lg:text-xl;
+    font-size: var(--uarion-body);
+    @apply leading-relaxed text-slate-300;
+  }
+  @media (min-width: 640px) {
+    .text-body {
+      font-size: var(--uarion-body-sm);
+    }
+  }
+  @media (min-width: 1024px) {
+    .text-body {
+      font-size: var(--uarion-body-lg);
+    }
   }
 
-  /* 카드·상품 설명·라벨 */
+  /* 카드·상품 설명 — var(--uarion-body-card*): 18→20→24px */
   .text-body-card {
-    @apply text-lg leading-relaxed text-slate-300 sm:text-xl lg:text-2xl;
+    font-size: var(--uarion-body-card);
+    @apply leading-relaxed text-slate-300;
+  }
+  @media (min-width: 640px) {
+    .text-body-card {
+      font-size: var(--uarion-body-card-sm);
+    }
+  }
+  @media (min-width: 1024px) {
+    .text-body-card {
+      font-size: var(--uarion-body-card-lg);
+    }
   }
 
-  /* 폼 라벨·카테고리·뱃지·칩 */
+  /* 라벨·카테고리·뱃지·칩 — var(--uarion-label*): 16→18→20px */
   .text-label {
-    @apply text-base font-medium text-slate-300 sm:text-lg lg:text-xl;
+    font-size: var(--uarion-label);
+    @apply font-medium text-slate-300;
+  }
+  @media (min-width: 640px) {
+    .text-label {
+      font-size: var(--uarion-label-sm);
+    }
+  }
+  @media (min-width: 1024px) {
+    .text-label {
+      font-size: var(--uarion-label-lg);
+    }
   }
 
-  /* 면책·보조 안내 (본문보다 한 단계 작음) */
+  /* 페이지 상단 뱃지·섹션 라벨 (h1 위 eyebrow) */
+  .text-page-eyebrow {
+    font-size: var(--uarion-label);
+    @apply font-semibold uppercase tracking-widest text-accent;
+  }
+  @media (min-width: 640px) {
+    .text-page-eyebrow {
+      font-size: var(--uarion-label-sm);
+    }
+  }
+  @media (min-width: 1024px) {
+    .text-page-eyebrow {
+      font-size: var(--uarion-label-lg);
+    }
+  }
+
+  /* 면책·보조 안내 — var(--uarion-body-muted*): 14→16→18px */
   .text-body-muted {
-    @apply text-sm leading-relaxed text-slate-500 sm:text-base lg:text-lg;
+    font-size: var(--uarion-body-muted);
+    @apply leading-relaxed text-slate-500;
+  }
+  @media (min-width: 640px) {
+    .text-body-muted {
+      font-size: var(--uarion-body-muted-sm);
+    }
+  }
+  @media (min-width: 1024px) {
+    .text-body-muted {
+      font-size: var(--uarion-body-muted-lg);
+    }
   }
 }

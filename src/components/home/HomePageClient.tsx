@@ -72,9 +72,8 @@ export default function HomePageClient() {
               {t(i18n.hero.label)}
             </p>
             <h1 className="mt-4 text-[1.65rem] font-bold leading-[1.25] tracking-tight text-white sm:text-[1.85rem] lg:text-4xl xl:text-[2.75rem]">
-              {t(i18n.hero.titleLine1)}
-              <br />
-              {t(i18n.hero.titleLine2)}
+              <span className="block">{t(i18n.hero.titleLine1)}</span>
+              <span className="block">{t(i18n.hero.titleLine2)}</span>
             </h1>
             <p className="text-body mt-4 max-w-2xl lg:leading-relaxed">
               {t(i18n.hero.description)}
