@@ -113,10 +113,10 @@ export const playbookI18n = {
       "Lessons from running real AI services in production."
     ),
     categories: tr(
-      "사용자 확보 / 파운더 모집 / 베타 운영 / 가격 정책 / AI 비용 절감 / 서버 안정화 / 해외 진출",
+      "사용자 확보 / 창립 멤버 모집 / 베타 운영 / 가격 정책 / AI 비용 절감 / 서버 안정화 / 해외 진출",
       "User growth / Founder recruitment / Beta ops / Pricing / AI cost control / Reliability / Global expansion"
     ),
-    exampleTitle: tr("파운더 300명 모집 전략", "Founder 300 Recruitment Playbook"),
+    exampleTitle: tr("창립 멤버 300명 모집 전략", "Founder 300 Recruitment Playbook"),
     exampleDesc: tr(
       "초기 신뢰 확보·인증 시스템 활용·커뮤니티 운영·SNS 바이럴·성과 분석",
       "Trust building, verification, community, social virality, analytics"

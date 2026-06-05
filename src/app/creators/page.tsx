@@ -29,7 +29,7 @@ const dummyCreators = [
 
 export default function CreatorsPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div className="page-container py-12">
       <PageHeader
         badge="Creators"
         title="AI 제작자·판매자"

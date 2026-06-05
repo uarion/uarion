@@ -69,13 +69,13 @@ export default function Footer() {
   const { t } = useLanguage();
 
   return (
-    <footer className="mt-auto border-t border-white/10 bg-[#000510]">
+    <footer className="mt-auto border-t border-white/10 bg-navy-1000">
       <div className="page-container py-12 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
             <div className="flex items-center gap-3">
-              <img src={HOME_ASSETS.logo} alt="" aria-hidden className="h-11 w-auto sm:h-12 lg:h-14" />
-              <span className="text-xl font-bold text-white lg:text-2xl">UARION</span>
+              <img src={HOME_ASSETS.logo} alt="" aria-hidden className="h-10 w-auto sm:h-11" />
+              <span className="text-lg font-bold text-white sm:text-xl">UARION</span>
             </div>
             <p className="mt-4 text-base leading-relaxed text-slate-300 lg:text-lg">
               {t(i18n.footer.tagline1)}
@@ -87,7 +87,7 @@ export default function Footer() {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-slate-400 transition-colors hover:border-[#0085FF]/40 hover:text-[#0085FF]"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 text-slate-400 transition-colors hover:border-accent/40 hover:text-accent"
                   aria-label={social.label}
                 >
                   <SocialIcon label={social.label} />
@@ -104,11 +104,11 @@ export default function Footer() {
                   <li key={link.key}>
                     <Link
                       href={link.href}
-                      className="inline-flex items-center gap-1.5 text-base text-slate-400 hover:text-[#0085FF] lg:text-lg"
+                      className="inline-flex items-center gap-1.5 text-base text-slate-400 hover:text-accent lg:text-lg"
                     >
                       {t(footerLinkLabels[link.key])}
                       {"badge" in link && link.badge && (
-                        <span className="rounded bg-[#0085FF]/20 px-1 py-0.5 text-[10px] font-semibold text-[#0085FF]">
+                        <span className="rounded bg-accent/20 px-1 py-0.5 text-[10px] font-semibold text-accent">
                           {t(i18n.nav.badgeBeta)}
                         </span>
                       )}
@@ -122,7 +122,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 {footerCompanyLinks.map((link) => (
                   <li key={link.key}>
-                    <a href={link.href} className="text-base text-slate-400 hover:text-[#0085FF] lg:text-lg">
+                    <a href={link.href} className="text-base text-slate-400 hover:text-accent lg:text-lg">
                       {t(footerLinkLabels[link.key])}
                     </a>
                   </li>
@@ -134,7 +134,7 @@ export default function Footer() {
               <ul className="space-y-2">
                 {footerSupportLinks.map((link) => (
                   <li key={link.key}>
-                    <a href={link.href} className="text-base text-slate-400 hover:text-[#0085FF] lg:text-lg">
+                    <a href={link.href} className="text-base text-slate-400 hover:text-accent lg:text-lg">
                       {t(footerLinkLabels[link.key])}
                     </a>
                   </li>
@@ -150,11 +150,11 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder={t(i18n.footer.emailPlaceholder)}
-                className="min-w-0 flex-1 rounded-lg border border-white/[0.14] bg-[#0c1528] px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-[#0085FF] focus:outline-none"
+                className="min-w-0 flex-1 rounded-lg border border-navy-700 bg-navy-900 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-accent focus:outline-none"
               />
               <button
                 type="button"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0085FF] text-white hover:bg-[#0070d6]"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-accent/40 bg-accent/10 text-accent hover:bg-accent/20"
                 aria-label={t(i18n.footer.subscribe)}
               >
                 →

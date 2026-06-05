@@ -11,7 +11,7 @@
 }
 
 body {
-  background-color: #000510;
+  background-color: var(--color-navy-950);
   color: #e8edf5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -42,8 +42,14 @@ body {
 
 /* 홈·헤더·푸터 — 큰 화면에서 넓고 선명하게 */
 @layer components {
+  /* 본문·푸터 — max-width 1382px (max-w-6xl 1152px × 1.2) */
   .page-container {
-    @apply mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-10 xl:max-w-[100rem] xl:px-12 2xl:max-w-[112rem];
+    @apply mx-auto w-full max-w-[86.4rem] px-4 sm:px-6 lg:px-8;
+  }
+
+  /* 헤더 — 좌우 대칭 패딩 (양 끝 여백 동일) */
+  .header-container {
+    @apply w-full box-border px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-16;
   }
 
   .home-page {
@@ -51,7 +57,7 @@ body {
   }
 
   .home-card {
-    @apply rounded-xl border border-white/[0.14] bg-[#0c1528];
+    @apply rounded-xl border border-navy-700 bg-navy-900;
   }
 
   /* 본문 — var(--uarion-body*): 16→18→20px */

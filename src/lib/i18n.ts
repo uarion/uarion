@@ -1,5 +1,6 @@
 /** UI 번역 — ko 기본, en 전환. 메인·헤더·푸터·플레이북 문구 */
 
+import { authenticityI18n } from "@/lib/i18n-authenticity";
 import { playbookI18n } from "@/lib/i18n-playbook";
 
 export type Locale = "ko" | "en";
@@ -18,6 +19,7 @@ export const i18n = {
     market: tr("마켓", "Market"),
     registry: tr("등록소", "Registry"),
     certification: tr("인증", "Certification"),
+    authenticity: tr("진위검증", "Authenticity"),
     playbook: tr("플레이북", "Playbook"),
     creators: tr("크리에이터", "Creators"),
     community: tr("커뮤니티", "Community"),
@@ -84,14 +86,14 @@ export const i18n = {
   },
   notification: {
     message: tr(
-      "마켓플레이스는 곧 오픈됩니다. 현재 파운더 크리에이터를 우선 모집하고 있습니다.",
-      "The marketplace opens soon. We are recruiting Founder Creators first."
+      "마켓플레이스는 곧 오픈됩니다. 현재 창립 멤버 크리에이터를 우선 모집하고 있습니다.",
+      "The marketplace opens soon. We are recruiting Founding Member Creators first."
     ),
     link: tr("자세히 보기", "Learn more"),
   },
   stats: {
     registered: tr("등록된 AI", "Registered AI"),
-    founders: tr("파운더 크리에이터", "Founder Creators"),
+    founders: tr("창립 멤버 크리에이터", "Founding Member Creators"),
     beta: tr("베타 신청자", "Beta applicants"),
     pending: tr("인증 대기", "Pending verification"),
     disclaimer: tr(
@@ -100,7 +102,7 @@ export const i18n = {
     ),
   },
   founderBenefits: {
-    sectionTitle: tr("파운더 혜택", "Founder Benefits"),
+    sectionTitle: tr("창립 멤버 혜택", "Founder Benefits"),
     fee: {
       title: tr("평생 수수료 할인", "Lifetime fee discount"),
       desc: tr("거래 수수료 평생 50%", "50% off trading fees for life"),
@@ -110,8 +112,8 @@ export const i18n = {
       desc: tr("신규 AI 메인 우선 노출", "New listings featured on the homepage"),
     },
     badge: {
-      title: tr("파운더 배지 지급", "Founder badge"),
-      desc: tr("공식 파운더 배지", "Official Founder badge on your profile"),
+      title: tr("창립 멤버 배지 지급", "Founder badge"),
+      desc: tr("공식 창립 멤버 배지", "Official Founder badge on your profile"),
     },
   },
   services: {
@@ -155,7 +157,7 @@ export const i18n = {
     step4: tr("마켓플레이스", "Marketplace"),
   },
   founderCta: {
-    title: tr("지금 파운더 크리에이터에 참여하세요", "Join as a Founder Creator now"),
+    title: tr("지금 창립 멤버 크리에이터에 참여하세요", "Join as a Founding Member Creator now"),
     desc: tr(
       "당신의 이름이 UARION 최초의 창작자로 기록됩니다.",
       "Your name will be recorded among UARION’s first creators."
@@ -163,7 +165,7 @@ export const i18n = {
     apply: tr("창립 멤버 되기", "Become a Founder"),
     cards: {
       badge: {
-        tag: tr("파운더 배지", "FOUNDER BADGE"),
+        tag: tr("창립 멤버 배지", "FOUNDER BADGE"),
         title: tr("공식 배지 & 인증", "Official badge & verification"),
       },
       benefits: {
@@ -213,6 +215,7 @@ export const i18n = {
     accountMenu: tr("계정 메뉴", "Account menu"),
   },
   playbook: playbookI18n,
+  authenticity: authenticityI18n,
 } as const;
 
 export type I18nTree = typeof i18n;

@@ -14,7 +14,7 @@ const registryFields = [
 
 export default function RegistryPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div className="page-container py-12">
       <PageHeader
         badge="AI Registry"
         title="AI Registry"

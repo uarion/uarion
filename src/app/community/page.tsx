@@ -14,7 +14,7 @@ const boards = [
 
 export default function CommunityPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div className="page-container py-12">
       <PageHeader
         badge="Community"
         title="커뮤니티"

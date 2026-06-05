@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 
 function IconWrap({ children, glow = "cyan" }: { children: ReactNode; glow?: "cyan" | "violet" }) {
-  const ring = glow === "violet" ? "ring-violet-500/50" : "ring-[#0085FF]/50";
+  const ring = glow === "violet" ? "ring-violet-500/50" : "ring-accent/50";
   return (
     <div
-      className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.12] bg-[#0c1528] ring-1 ${ring}`}
+      className={`flex h-10 w-10 items-center justify-center rounded-full border border-navy-700 bg-navy-900 ring-1 ${ring}`}
     >
       {children}
     </div>
@@ -83,7 +83,7 @@ export function FounderIcon({ name, className = "h-5 w-5" }: { name: string; cla
       </svg>
     ),
   };
-  return <span className="text-[#0085FF]">{icons[name] ?? icons.cube}</span>;
+  return <span className="text-accent">{icons[name] ?? icons.cube}</span>;
 }
 
 export function GlowingStatIcon({ name }: { name: string }) {
@@ -96,8 +96,8 @@ export function GlowingStatIcon({ name }: { name: string }) {
 
 export function ServiceIconBox({ name }: { name: string }) {
   return (
-    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-[#0085FF]/30 bg-[#0085FF]/15 lg:h-16 lg:w-16">
-      <FounderIcon name={name} className="h-7 w-7 text-[#0085FF] lg:h-8 lg:w-8" />
+    <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-accent/30 bg-accent/15 lg:h-16 lg:w-16">
+      <FounderIcon name={name} className="h-7 w-7 text-accent lg:h-8 lg:w-8" />
     </div>
   );
 }

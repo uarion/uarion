@@ -13,15 +13,43 @@ const navLinkConfig = [
   { href: "/market", label: i18n.nav.market, badge: "beta" as const },
   { href: "/registry", label: i18n.nav.registry, badge: null },
   { href: "/certification", label: i18n.nav.certification, badge: null },
+  { href: "/authenticity", label: i18n.nav.authenticity, badge: null },
   { href: "/playbook", label: i18n.nav.playbook, badge: null },
   { href: "/creators", label: i18n.nav.creators, badge: null },
   { href: "/community", label: i18n.nav.community, badge: "soon" as const },
 ] as const;
 
-function navLinkClass(isActive: boolean) {
-  return `flex items-center gap-2 rounded-md px-3 py-2 text-base font-semibold transition-colors lg:px-4 lg:py-2.5 lg:text-xl xl:text-[1.35rem] ${
-    isActive ? "text-[#0085FF]" : "text-slate-300 hover:text-white"
+const navTextClass = "text-base font-semibold";
+
+function navLinkClass(isActive: boolean, variant: "desktop" | "mobile" = "mobile") {
+  const sizeClass =
+    variant === "desktop"
+      ? "text-base font-semibold leading-none tracking-wide xl:text-lg 2xl:text-2xl"
+      : navTextClass;
+  const padClass = variant === "desktop" ? "px-1.5 py-2 xl:px-2.5 2xl:px-4" : "px-3 py-2";
+
+  return `flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md transition-colors ${padClass} ${sizeClass} ${
+    isActive ? "text-accent" : "text-slate-300 hover:text-white"
   }`;
+}
+
+function BrandLogo() {
+  return (
+    <Link
+      href="/"
+      className="relative z-10 flex shrink-0 items-center gap-2 transition-opacity hover:opacity-95 sm:gap-3"
+    >
+      <img
+        src={HOME_ASSETS.logo}
+        alt=""
+        aria-hidden
+        className="h-10 w-auto shrink-0 sm:h-11 lg:h-12 2xl:h-[5.25rem]"
+      />
+      <span className="text-lg font-bold tracking-wide text-white sm:text-xl lg:text-2xl 2xl:text-4xl">
+        UARION
+      </span>
+    </Link>
+  );
 }
 
 function LanguageDropdown() {
@@ -40,11 +68,11 @@ function LanguageDropdown() {
   const display = locale === "ko" ? t(i18n.nav.langKo) : t(i18n.nav.langEn);
 
   return (
-    <div ref={ref} className="relative hidden sm:block">
+    <div ref={ref} className="relative">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#0a1220] px-4 py-2.5 text-sm font-semibold text-white hover:border-[#0085FF]/40 lg:px-5 lg:py-3 lg:text-base"
+        className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg border border-white/10 bg-navy-900 px-3 py-2 text-white hover:border-accent/40 ${navTextClass}`}
         aria-expanded={open}
         aria-haspopup="listbox"
       >
@@ -56,7 +84,7 @@ function LanguageDropdown() {
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 z-50 mt-1 min-w-[6.5rem] rounded-lg border border-white/10 bg-[#0a1220] py-1 shadow-xl"
+          className="absolute right-0 z-50 mt-1 min-w-[6.5rem] rounded-lg border border-white/10 bg-navy-900 py-1 shadow-xl"
         >
           {(["ko", "en"] as const).map((code) => (
             <li key={code}>
@@ -64,8 +92,8 @@ function LanguageDropdown() {
                 type="button"
                 role="option"
                 aria-selected={locale === code}
-                className={`block w-full px-4 py-2.5 text-left text-sm font-medium lg:text-base ${
-                  locale === code ? "text-[#0085FF]" : "text-slate-400 hover:text-white"
+                className={`block w-full px-4 py-2 text-left text-sm font-medium ${
+                  locale === code ? "text-accent" : "text-slate-400 hover:text-white"
                 }`}
                 onClick={() => {
                   setLocale(code);
@@ -82,21 +110,69 @@ function LanguageDropdown() {
   );
 }
 
+function HeaderActions() {
+  const { t } = useLanguage();
+
+  return (
+    <div className="relative z-10 flex shrink-0 items-center gap-2 lg:gap-2.5">
+      <LanguageDropdown />
+      <Link
+        href="/sell"
+        className={`inline-flex whitespace-nowrap rounded-lg border border-accent/40 bg-accent/10 px-2.5 py-2 text-accent transition-colors hover:bg-accent/20 xl:px-4 ${navTextClass}`}
+      >
+        {t(i18n.nav.founderApply)}
+      </Link>
+      <HeaderAuth />
+    </div>
+  );
+}
+
+function HamburgerButton({
+  open,
+  onToggle,
+  labelOpen,
+  labelClose,
+}: {
+  open: boolean;
+  onToggle: () => void;
+  labelOpen: string;
+  labelClose: string;
+}) {
+  return (
+    <button
+      type="button"
+      className="ml-auto inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 lg:hidden"
+      aria-expanded={open}
+      aria-controls="compact-nav"
+      aria-label={open ? labelClose : labelOpen}
+      onClick={onToggle}
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+        {open ? (
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        ) : (
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 export default function Navbar() {
-  const { locale, setLocale, t } = useLanguage();
+  const { t } = useLanguage();
   const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [compactOpen, setCompactOpen] = useState(false);
 
   useEffect(() => {
-    setMobileOpen(false);
+    setCompactOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    document.body.style.overflow = compactOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [mobileOpen]);
+  }, [compactOpen]);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -108,109 +184,82 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.12] bg-[#000510]">
-      <nav
-        className="page-container grid h-[4.25rem] grid-cols-[auto_1fr_auto] items-center gap-3 sm:h-20 lg:gap-8 xl:h-[5.25rem]"
-        aria-label="주요 메뉴"
-      >
-        <Link href="/" className="flex min-w-0 shrink-0 items-center gap-2.5 transition-opacity hover:opacity-95">
-          <img
-            src={HOME_ASSETS.logo}
-            alt=""
-            aria-hidden
-            className="h-14 w-auto shrink-0 sm:h-16 lg:h-[4.5rem] xl:h-20"
-          />
-          <span className="truncate text-lg font-bold tracking-wide text-white sm:text-xl lg:text-2xl">
-            UARION
-          </span>
-        </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-navy-1000">
+      <div className="header-container">
+        <nav
+          className="flex h-16 w-full items-center xl:h-[5.5rem]"
+          aria-label="주요 메뉴"
+        >
+          <BrandLogo />
 
-        <ul className="hidden items-center justify-center gap-0.5 xl:flex">
-          {navLinkConfig.map((link) => (
-            <li key={link.href}>
-              <Link href={link.href} className={navLinkClass(isActive(link.href))}>
-                {t(link.label)}
-                {link.badge && (
-                  <span
-                    className={`rounded px-2 py-0.5 text-xs font-semibold lg:text-sm ${
-                      link.badge === "beta"
-                        ? "bg-[#0085FF]/20 text-[#0085FF]"
-                        : "bg-white/10 text-slate-400"
-                    }`}
-                  >
-                    {badgeLabel(link.badge)}
-                  </span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
+          {/* 로고↔메뉴 / 메뉴↔우측 그룹 간격을 동일하게 맞추는 좌우 스페이서 */}
+          <div className="hidden min-w-0 flex-1 lg:block" aria-hidden="true" />
 
-        <div className="flex items-center justify-end gap-2 sm:gap-3">
-          <LanguageDropdown />
-          <Link
-            href="/sell"
-            className="hidden rounded-lg bg-[#0085FF] px-5 py-2.5 text-base font-semibold text-white transition-colors hover:bg-[#0070d6] sm:inline-block lg:px-6 lg:py-3 lg:text-lg"
-          >
-            {t(i18n.nav.founderApply)}
-          </Link>
-          <HeaderAuth />
-          <button
-            type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-slate-300 hover:bg-white/5 xl:hidden"
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-nav"
-            aria-label={mobileOpen ? t(i18n.nav.menuClose) : t(i18n.nav.menuOpen)}
-            onClick={() => setMobileOpen((o) => !o)}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-              {mobileOpen ? (
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </nav>
-
-      {mobileOpen && (
-        <div id="mobile-nav" className="border-t border-white/10 bg-[#000510] xl:hidden">
-          <ul className="page-container space-y-1 py-4">
+          <ul className="hidden shrink-0 flex-row flex-nowrap items-center gap-1 lg:flex xl:gap-2 2xl:gap-6">
             {navLinkConfig.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} className={navLinkClass(isActive(link.href))}>
+              <li key={link.href} className="shrink-0">
+                <Link href={link.href} className={navLinkClass(isActive(link.href), "desktop")}>
                   {t(link.label)}
                   {link.badge && (
-                    <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs text-slate-400">
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-xs font-semibold ${
+                        link.badge === "beta"
+                          ? "bg-accent/20 text-accent"
+                          : "bg-white/10 text-slate-400"
+                      }`}
+                    >
                       {badgeLabel(link.badge)}
                     </span>
                   )}
                 </Link>
               </li>
             ))}
-            <li>
-              <Link href="/sell" className={navLinkClass(pathname === "/sell")}>
+          </ul>
+
+          <div className="hidden min-w-0 flex-1 lg:block" aria-hidden="true" />
+
+          <div className="header-actions hidden shrink-0 lg:block">
+            <HeaderActions />
+          </div>
+
+          <HamburgerButton
+            open={compactOpen}
+            onToggle={() => setCompactOpen((o) => !o)}
+            labelOpen={t(i18n.nav.menuOpen)}
+            labelClose={t(i18n.nav.menuClose)}
+          />
+        </nav>
+      </div>
+
+      {compactOpen && (
+        <div id="compact-nav" className="border-t border-white/10 bg-navy-1000 lg:hidden">
+          <div className="header-container space-y-4 py-4">
+            <ul className="space-y-1">
+              {navLinkConfig.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={navLinkClass(isActive(link.href))}>
+                    {t(link.label)}
+                    {link.badge && (
+                      <span className="rounded bg-white/10 px-1.5 py-0.5 text-xs text-slate-400">
+                        {badgeLabel(link.badge)}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex flex-wrap items-center gap-2.5 border-t border-white/10 pt-4">
+              <LanguageDropdown />
+              <Link
+                href="/sell"
+                className={`inline-flex whitespace-nowrap rounded-lg border border-accent/40 bg-accent/10 px-2.5 py-2 text-accent transition-colors hover:bg-accent/20 xl:px-4 ${navTextClass}`}
+              >
                 {t(i18n.nav.founderApply)}
               </Link>
-            </li>
-            <li className="flex gap-2 px-3 pt-2">
-              {(["ko", "en"] as const).map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  onClick={() => setLocale(code)}
-                  className={`rounded-lg border px-4 py-2 text-sm font-semibold ${
-                    locale === code
-                      ? "border-[#0085FF] text-[#0085FF]"
-                      : "border-white/10 text-slate-400"
-                  }`}
-                >
-                  {code === "ko" ? t(i18n.nav.langKo) : t(i18n.nav.langEn)}
-                </button>
-              ))}
-            </li>
-          </ul>
+              <HeaderAuth />
+            </div>
+          </div>
         </div>
       )}
     </header>

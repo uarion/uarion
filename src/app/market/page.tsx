@@ -3,7 +3,7 @@ import PageHeader from "@/components/PageHeader";
 
 export default function MarketPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <div className="page-container py-12">
       <PageHeader
         badge="Market"
         title="AI 자동화·창작물·에이전트 거래소"

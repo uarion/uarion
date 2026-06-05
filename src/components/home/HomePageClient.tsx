@@ -60,18 +60,18 @@ export default function HomePageClient() {
   const { t } = useLanguage();
 
   return (
-    <div className="home-page overflow-x-hidden bg-[#000510] text-slate-100">
+    <div className="home-page overflow-x-hidden bg-navy-950 text-slate-100">
       <section className="relative">
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_75%_20%,rgba(0,133,255,0.08),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_75%_20%,rgba(79,195,247,0.08),transparent_70%)]"
           aria-hidden
         />
-        <div className="page-container relative grid items-center gap-10 py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:py-16 xl:py-20">
-          <div className="relative z-10 max-w-2xl xl:max-w-3xl">
-            <p className="text-sm font-semibold tracking-wider text-[#0085FF] sm:text-base lg:text-lg">
+        <div className="page-container relative grid items-center gap-8 py-8 sm:gap-10 sm:py-10 lg:grid-cols-[1fr_0.9fr] lg:gap-10 lg:py-14 xl:py-16">
+          <div className="relative z-10 max-w-2xl lg:max-w-none xl:max-w-2xl">
+            <p className="text-sm font-semibold tracking-wider text-accent sm:text-base">
               {t(i18n.hero.label)}
             </p>
-            <h1 className="mt-4 text-[1.65rem] font-bold leading-[1.25] tracking-tight text-white sm:text-[1.85rem] lg:text-4xl xl:text-[2.75rem]">
+            <h1 className="mt-3 text-[1.6rem] font-bold leading-[1.3] tracking-tight text-white sm:mt-4 sm:text-[1.85rem] lg:text-3xl xl:text-4xl">
               <span className="block">{t(i18n.hero.titleLine1)}</span>
               <span className="block">{t(i18n.hero.titleLine2)}</span>
             </h1>
@@ -81,14 +81,14 @@ export default function HomePageClient() {
             <div className="mt-8 flex flex-wrap gap-3 sm:mt-10">
               <Link
                 href="/sell"
-                className="inline-flex items-center rounded-lg bg-[#0085FF] px-6 py-3.5 text-base font-semibold text-white transition-colors hover:bg-[#0070d6] lg:px-8 lg:py-4 lg:text-lg"
+                className="inline-flex items-center rounded-lg border border-accent/40 bg-accent/10 px-6 py-3.5 text-base font-semibold text-accent transition-colors hover:bg-accent/20 lg:px-8 lg:py-4 lg:text-lg"
               >
                 {t(i18n.hero.ctaFounder)}
                 <Arrow />
               </Link>
               <Link
                 href="/certification"
-                className="inline-flex items-center rounded-lg border-2 border-white/25 bg-transparent px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-[#0085FF]/60 hover:text-[#0085FF] lg:px-8 lg:py-4 lg:text-lg"
+                className="inline-flex items-center rounded-lg border-2 border-white/25 bg-transparent px-6 py-3.5 text-base font-semibold text-white transition-colors hover:border-accent/60 hover:text-accent lg:px-8 lg:py-4 lg:text-lg"
               >
                 {t(i18n.hero.ctaCertStandards)}
                 <Arrow />
@@ -99,14 +99,14 @@ export default function HomePageClient() {
                 {socialProof.avatars.map((initial, i) => (
                   <span
                     key={initial}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[#000510] bg-gradient-to-br from-[#0085FF] to-violet-600 text-xs font-bold text-white sm:h-10 sm:w-10"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-navy-950 bg-gradient-to-br from-accent to-violet-600 text-xs font-bold text-white sm:h-10 sm:w-10"
                     style={{ zIndex: 10 - i }}
                   >
                     {initial}
                   </span>
                 ))}
               </div>
-              <p className="text-base leading-relaxed text-slate-300 sm:text-lg lg:text-xl">
+              <p className="text-sm leading-relaxed text-slate-300 sm:text-base lg:text-lg">
                 {t(i18n.hero.socialProof)}
               </p>
             </div>
@@ -120,12 +120,12 @@ export default function HomePageClient() {
       <section className="page-container pb-8">
         <div className="home-card flex flex-col gap-3 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5">
           <div className="flex items-center gap-3">
-            <FounderIcon name="bell" className="h-6 w-6 shrink-0 text-[#0085FF]" />
+            <FounderIcon name="bell" className="h-6 w-6 shrink-0 text-accent" />
             <p className="text-base text-slate-200 sm:text-lg lg:text-xl">{t(i18n.notification.message)}</p>
           </div>
           <Link
             href={notificationHref}
-            className="shrink-0 text-base font-semibold text-[#0085FF] hover:underline lg:text-lg"
+            className="shrink-0 text-base font-semibold text-accent hover:underline lg:text-lg"
           >
             {t(i18n.notification.link)}
           </Link>
@@ -139,7 +139,7 @@ export default function HomePageClient() {
             return (
               <div key={key} className="home-card p-6 sm:p-7 lg:p-8">
                 <GlowingStatIcon name={stat.icon} />
-                <p className="mt-4 text-4xl font-bold text-white sm:text-5xl lg:text-6xl">
+                <p className="mt-4 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
                   {stat.value}
                 </p>
                 <p className="text-body-card mt-2 font-medium leading-snug">
@@ -153,16 +153,16 @@ export default function HomePageClient() {
       </section>
 
       <section className="page-container pb-12 sm:pb-16">
-        <h2 className="mb-6 text-sm font-bold uppercase tracking-widest text-[#0085FF] sm:text-base lg:text-lg">
+        <h2 className="mb-6 text-sm font-bold uppercase tracking-widest text-accent sm:text-base lg:text-lg">
           {t(i18n.founderBenefits.sectionTitle)}
         </h2>
         <div className="grid gap-5 md:grid-cols-3 md:gap-6 lg:gap-8">
           {founderBenefitIds.map((id) => {
             const b = benefitMap[id];
             return (
-              <div key={id} className="home-card p-7 transition-colors hover:border-[#0085FF]/40 lg:p-8">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#0085FF]/15 ring-1 ring-[#0085FF]/30">
-                  <FounderIcon name={id} className="h-7 w-7 text-[#0085FF]" />
+              <div key={id} className="home-card p-7 transition-colors hover:border-accent/40 lg:p-8">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent/15 ring-1 ring-accent/30">
+                  <FounderIcon name={id} className="h-7 w-7 text-accent" />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold text-white lg:text-2xl">{t(b.title)}</h3>
                 <p className="text-body-card mt-2">{t(b.desc)}</p>
@@ -173,20 +173,20 @@ export default function HomePageClient() {
       </section>
 
       <section className="page-container pb-14 sm:pb-20">
-        <h2 className="mb-6 text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+        <h2 className="mb-6 text-2xl font-bold text-white sm:text-3xl">
           {t(i18n.services.sectionTitle)}
         </h2>
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {serviceItems.map((svc) => {
             const copy = serviceMap[svc.id];
             return (
-              <div key={svc.id} className="home-card flex flex-col p-7 hover:border-[#0085FF]/40 lg:p-8">
+              <div key={svc.id} className="home-card flex flex-col p-7 hover:border-accent/40 lg:p-8">
                 <ServiceIconBox name={svc.icon} />
                 <h3 className="text-xl font-semibold text-white lg:text-2xl">{t(copy.title)}</h3>
                 <p className="text-body-card mt-2 flex-1">{t(copy.desc)}</p>
                 <Link
                   href={svc.href}
-                  className="mt-5 text-base font-medium text-[#0085FF] hover:underline lg:text-lg"
+                  className="mt-5 text-base font-medium text-accent hover:underline lg:text-lg"
                 >
                   {t(i18n.services.learnMore)}
                 </Link>
@@ -198,10 +198,10 @@ export default function HomePageClient() {
 
       <section className="page-container pb-16 sm:pb-24">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
             {t(i18n.roadmap.sectionTitle)}
           </h2>
-          <Link href="/certification" className="text-base font-medium text-[#0085FF] hover:underline lg:text-lg">
+          <Link href="/certification" className="text-base font-medium text-accent hover:underline lg:text-lg">
             {t(i18n.roadmap.viewAll)}
           </Link>
         </div>
@@ -214,20 +214,20 @@ export default function HomePageClient() {
                   <div key={step.step} className="relative flex flex-1 flex-col items-center text-center">
                     {i < roadmapSteps.length - 1 && (
                       <div
-                        className="absolute left-[58%] top-5 h-0.5 w-full bg-gradient-to-r from-[#0085FF] to-white/10"
+                        className="absolute left-[58%] top-5 h-0.5 w-full bg-gradient-to-r from-accent to-white/10"
                         aria-hidden
                       />
                     )}
                     <div
                       className={`relative z-10 flex h-11 w-11 items-center justify-center rounded-full text-base font-bold lg:h-12 lg:w-12 lg:text-lg ${
                         step.active
-                          ? "bg-[#0085FF] text-white"
-                          : "border border-white/25 bg-[#0c1528] text-slate-400"
+                          ? "bg-accent text-white"
+                          : "border border-navy-700 bg-navy-900 text-slate-400"
                       }`}
                     >
                       {step.step}
                     </div>
-                    <p className="mt-3 text-sm font-semibold text-[#0085FF] lg:text-base">{step.period}</p>
+                    <p className="mt-3 text-sm font-semibold text-accent lg:text-base">{step.period}</p>
                     <p className="mt-1 text-base font-medium text-white lg:text-lg">
                       {t(roadmapTitleMap[step.titleKey])}
                     </p>
@@ -248,11 +248,11 @@ export default function HomePageClient() {
                 return (
                   <div
                     key={id}
-                    className="rounded-lg border border-white/[0.14] bg-[#080f1c] px-4 py-3"
+                    className="rounded-lg border border-navy-700 bg-navy-900 px-4 py-3"
                   >
-                    <p className="text-xs font-bold tracking-wider text-[#0085FF] lg:text-sm">{t(card.tag)}</p>
+                    <p className="text-xs font-bold tracking-wider text-accent lg:text-sm">{t(card.tag)}</p>
                     <div className="mt-2 flex items-center gap-2">
-                      <FounderIcon name={card.icon} className="h-5 w-5 shrink-0 text-[#0085FF]" />
+                      <FounderIcon name={card.icon} className="h-5 w-5 shrink-0 text-accent" />
                       <p className="text-sm font-medium text-slate-200 sm:text-base lg:text-lg">{t(card.title)}</p>
                     </div>
                   </div>
@@ -262,7 +262,7 @@ export default function HomePageClient() {
             <div className="mt-8 flex flex-col items-center gap-8 text-center">
               <Link
                 href={founderCtaHref}
-                className="inline-flex items-center rounded-lg bg-[#0085FF] px-8 py-3.5 text-lg font-semibold text-white transition-colors hover:bg-[#0070d6] sm:px-10 sm:py-4 sm:text-xl"
+                className="inline-flex items-center rounded-lg border border-accent/40 bg-accent/10 px-8 py-3.5 text-lg font-semibold text-accent transition-colors hover:bg-accent/20 sm:px-10 sm:py-4 sm:text-xl"
               >
                 {t(i18n.founderCta.apply)}
                 <Arrow />
@@ -290,7 +290,7 @@ export default function HomePageClient() {
               key={name}
               className="flex items-center gap-3 text-slate-300 transition-colors hover:text-white"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/[0.14] bg-[#0c1528] text-sm font-bold text-[#0085FF] lg:h-11 lg:w-11 lg:text-base">
+              <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-navy-700 bg-navy-900 text-sm font-bold text-accent lg:h-11 lg:w-11 lg:text-base">
                 {name.charAt(0).toUpperCase()}
               </span>
               <span className="text-base font-semibold tracking-tight sm:text-lg lg:text-xl">{name}</span>

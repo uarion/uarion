@@ -75,7 +75,7 @@ export default function HeaderAuth() {
     return (
       <Link
         href="/login"
-        className="text-base font-semibold text-slate-300 transition-colors hover:text-accent lg:text-lg"
+        className="whitespace-nowrap text-base font-semibold text-slate-300 transition-colors hover:text-accent"
       >
         {t(i18n.nav.login)}
       </Link>
