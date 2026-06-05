@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   MOCK_BLOCKED_EXT,
+  MOCK_CSAM_HASH,
   MOCK_MALWARE,
   MOCK_SAFE_IMAGE,
   MOCK_SYNTHETIC_VIDEO,
@@ -38,6 +39,15 @@ describe("runMockInspection integration (mock-only)", () => {
     const report = await runMockInspection({ file: MOCK_VOICE_REVIEW });
     expect(report.steps.some((s) => s.stepId === "detection_voice")).toBe(true);
     expect(report.steps.some((s) => s.stepId === "human_review")).toBe(true);
+  });
+
+  it("CSAM branch with test policy override → SOURCE_DELETED", async () => {
+    const report = await runMockInspection({
+      file: MOCK_CSAM_HASH,
+      testBlockedHashes: ["MOCK_BLOCKED_HASH_001"],
+    });
+    expect(report.status).toBe("SOURCE_DELETED");
+    expect(report.steps.some((s) => s.stepId === "hash_check" && !s.passed)).toBe(true);
   });
 
   it("never processes real files — mockId required", async () => {

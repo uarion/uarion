@@ -42,6 +42,14 @@
 | video_automation | progress.md 보류 기록 → UARION 작업만 계속 |
 | 결제·배포 명령 | progress.md 보류 기록 → 로컬 빌드·테스트까지 계속 |
 
+## 터미널 명령 (cd 금지)
+
+- Agent 터미널은 **이미 프로젝트 루트**(`UARION`)에서 실행된다.
+- 명령 앞에 `cd "c:\Users\esb50\Desktop\UARION"` 또는 `cd … &&` 를 **절대 붙이지 않는다.**
+- 올바른 예: `npm run test`, `npm run build`, `git status`
+- 잘못된 예: `cd "c:\Users\esb50\Desktop\UARION" && npm run test`
+- 이유: `cd`가 승인 요청을 유발해 작업이 멈추는 것을 방지한다.
+
 ## 작업 루프 (자리 비움 모드)
 
 1. 목표 분해 → 구현

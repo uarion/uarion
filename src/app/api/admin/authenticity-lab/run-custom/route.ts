@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyAdminBearerToken } from "@/lib/adminAuth";
-import { getReviewQueueSnapshot, runLabInspection } from "@/lib/authenticity-lab-admin";
+import { parseMockFileDescriptor, runLabInspection } from "@/lib/authenticity-lab-admin";
 import type { DetectionAdapterKind } from "@/lib/authenticity-lab/pipeline/detection-registry";
 
 export async function POST(request: Request) {
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   }
 
   let body: {
-    scenarioId?: string;
+    mockFile?: unknown;
     testBlockedHashes?: string[];
     detectionAdapterKind?: DetectionAdapterKind;
   };
@@ -21,12 +21,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!body.scenarioId) {
-    return NextResponse.json({ error: "scenarioId is required" }, { status: 400 });
+  const parsed = parseMockFileDescriptor(body.mockFile);
+  if (!parsed.file) {
+    return NextResponse.json({ error: parsed.error ?? "Invalid mock descriptor" }, { status: 400 });
   }
 
   const result = await runLabInspection({
-    scenarioId: body.scenarioId,
+    mockFile: parsed.file,
     testBlockedHashes: body.testBlockedHashes,
     detectionAdapterKind: body.detectionAdapterKind,
     adminEmail: auth.email,
@@ -41,6 +42,5 @@ export async function POST(request: Request) {
     trustSignals: result.trustSignals,
     persistedId: result.persistedId,
     persistWarning: result.persistWarning,
-    reviewQueue: getReviewQueueSnapshot(),
   });
 }

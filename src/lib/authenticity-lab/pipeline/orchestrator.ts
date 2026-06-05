@@ -1,5 +1,6 @@
 import { LAB_DISCLAIMER, scanExpressionViolations } from "../expression-guard";
 import { loadAuthenticityPolicy } from "../policy/loader";
+import { resolveInspectionPolicy } from "../policy/resolve";
 import { applyTransition, fusionEventForScore } from "../state-machine/transitions";
 import type {
   AuditEntry,
@@ -10,10 +11,11 @@ import type {
   PipelineStepId,
   StepResult,
 } from "../types";
-import { createDefaultDetectionAdapters } from "./detection-engine";
+import { createDetectionAdapters, type DetectionAdapterKind } from "./detection-registry";
 import { UarionFusionRisk, trustTierFromFusion } from "./fusion-risk";
 import { MockHashCheck } from "./hash-check";
 import { MockHumanReview } from "./human-review";
+import { getHumanReviewQueue } from "./human-review-queue";
 import { MockMalwareScan } from "./malware-scan";
 import { UarionPolicyEngine } from "./policy-engine";
 import { UarionReportBuilder } from "./report-builder";
@@ -36,10 +38,15 @@ function stepIdForModality(m: Modality): PipelineStepId {
 export type RunMockInspectionInput = {
   file: MockFileDescriptor;
   inspectionId?: string;
+  /** 테스트 전용 — MOCK_BLOCKED_HASH_* 만 허용 */
+  testBlockedHashes?: string[];
+  detectionAdapterKind?: DetectionAdapterKind;
 };
 
 export async function runMockInspection(input: RunMockInspectionInput): Promise<InspectionReport> {
-  const policy = loadAuthenticityPolicy();
+  const policy = resolveInspectionPolicy({
+    testBlockedHashes: input.testBlockedHashes,
+  });
   const inspectionId = input.inspectionId ?? `insp_mock_${Date.now()}`;
   const steps: StepResult[] = [];
   const auditTrail: AuditEntry[] = [];
@@ -139,7 +146,7 @@ export async function runMockInspection(input: RunMockInspectionInput): Promise<
     return buildReport(inspectionId, status, steps, auditTrail, fusion);
   }
 
-  const adapters = createDefaultDetectionAdapters();
+  const adapters = createDetectionAdapters(input.detectionAdapterKind ?? "mock");
   const primaryModality = modalityFromMime(input.file.mimeType);
   const modalities: Modality[] = primaryModality ? [primaryModality] : [];
 
@@ -195,6 +202,16 @@ export async function runMockInspection(input: RunMockInspectionInput): Promise<
     policy,
   });
   steps.push(reviewResult.step);
+
+  if (reviewResult.decision === "pending" || status === "REVIEW_REQUIRED") {
+    const q = getHumanReviewQueue().enqueue(fusionBreakdown.fused, policy);
+    auditTrail.push({
+      at: new Date().toISOString(),
+      action: "HUMAN_REVIEW_QUEUED",
+      actor: "system",
+      note: `queue=${q.id} dual=${q.requiresDual}`,
+    });
+  }
 
   if (status === "REVIEW_REQUIRED") {
     if (reviewResult.decision === "approve_mock") {
