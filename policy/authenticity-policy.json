@@ -1,0 +1,70 @@
+{
+  "$schema": "./authenticity-policy.schema.json",
+  "version": "1.0.0",
+  "name": "uarion-authenticity-policy",
+  "description": "UARION Authenticity Lab — Policy-as-Code (mock/static, no real hashes)",
+  "allowed_mime": [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "video/mp4",
+    "video/webm",
+    "audio/mpeg",
+    "audio/wav",
+    "audio/ogg"
+  ],
+  "blocked_extensions": [
+    ".exe",
+    ".bat",
+    ".cmd",
+    ".scr",
+    ".msi",
+    ".dll",
+    ".sh",
+    ".ps1",
+    ".vbs",
+    ".jar",
+    ".apk"
+  ],
+  "blocked_hashes": [],
+  "_blocked_hashes_comment": "DO NOT add real CSAM/illegal hashes. Use mock hash IDs in tests only (e.g. MOCK_BLOCKED_HASH_001).",
+  "high_risk_keywords": [
+    "deepfake",
+    "face-swap",
+    "voice-clone",
+    "impersonation",
+    "synthetic identity",
+    "non-consensual",
+    "minor",
+    "csam",
+    "revenge",
+    "fraudulent credential"
+  ],
+  "risk_threshold": {
+    "pre_block": 0.35,
+    "review_required": 0.55,
+    "block": 0.78,
+    "audit_lock": 0.92
+  },
+  "retention_policy": {
+    "evidence_days": 90,
+    "audit_log_days": 365,
+    "mock_artifact_ttl_hours": 24,
+    "source_delete_after_block": true
+  },
+  "review_rules": {
+    "always_review_modalities": ["voice"],
+    "auto_escalate_fusion_above": 0.65,
+    "require_dual_reviewer_above": 0.85,
+    "max_auto_safe_fusion": 0.34
+  },
+  "fusion_weights": {
+    "policy": 0.18,
+    "hash": 0.22,
+    "malware": 0.2,
+    "image_detection": 0.15,
+    "video_detection": 0.12,
+    "voice_detection": 0.08,
+    "keyword_boost_cap": 0.15
+  }
+}

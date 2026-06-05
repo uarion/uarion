@@ -1,16 +1,82 @@
 {
   "terminalAllowlist": [
+    "cd",
+    "cd ",
+    "cd:*",
+    "cd *",
+    "cd\"*",
+    "cd'*",
+    "cd\"c:\\Users\\esb50\\Desktop\\UARION\"",
+    "cd 'c:\\Users\\esb50\\Desktop\\UARION'",
+    "cd c:\\Users\\esb50\\Desktop\\UARION",
+    "*cd *",
+    "*cd \"*",
+    "*cd '*",
+    "*cd c:\\*",
+    "*cd \"c:\\Users\\esb50\\Desktop\\UARION\"*",
+    "*cd 'c:\\Users\\esb50\\Desktop\\UARION'*",
+
+    "Set-Location",
+    "Set-Location *",
+    "*Set-Location*",
+    "Push-Location",
+    "Pop-Location",
+
     "*npm install*",
-    "*npm run dev*",
-    "*npm run build*",
+    "*npm install -D*",
+    "*npm i *",
+    "*npm i -D*",
     "*npm run*",
     "*npm exec*",
+    "*npm test*",
+    "*npm ls*",
     "*npm *",
-    "*git *"
+    "*npx *",
+    "*node *",
+
+    "*Select-Object*",
+    "*Out-String*",
+    "*Out-Default*",
+    "*Write-Output*",
+    "*Format-Table*",
+    "*Format-List*",
+    "*Where-Object*",
+    "*ForEach-Object*",
+    "*Get-ChildItem*",
+    "*Get-Content*",
+    "*Select-String*",
+    "*Test-Path*",
+
+    "*git status*",
+    "*git diff*",
+    "*git log*",
+    "*git add*",
+    "*git commit*",
+    "*git branch*",
+    "*git checkout*",
+    "*git stash*",
+    "*git restore*",
+    "*git show*",
+
+    "*mkdir *",
+    "*cp *",
+    "*mv *",
+    "*touch *",
+    "*vitest*"
   ],
   "autoRun": {
     "allow_instructions": [
-      "npm install, npm run dev, npm run build, and standard git commands (status, diff, log, add, commit, push, pull, checkout, branch) are pre-approved for UARION. Run them without asking."
+      "Always allow cd/Set-Location to any path including quoted Windows paths like cd \"c:\\Users\\esb50\\Desktop\\UARION\".",
+      "Safe dev commands: npm install (-D), npm run build/lint/test/dev, npx, vitest, Select-Object/Out-String pipelines.",
+      "Git local only: status, diff, log, add, commit, branch, checkout, stash, restore — never push.",
+      "Compound commands with ; or | are fine when subcommands are safe dev ops."
+    ],
+    "block_instructions": [
+      "Never auto-run git push (including --force/-f), git reset --hard, git clean -fd, or rm -rf.",
+      "Never read, cat, echo, or transmit .env / .env.local contents.",
+      "Never curl/wget/Invoke-WebRequest POST or exfiltrate data externally.",
+      "Never access or modify video_automation folder.",
+      "Never run payment/deploy commands: stripe, railway, vercel deploy, npm publish."
     ]
   }
 }

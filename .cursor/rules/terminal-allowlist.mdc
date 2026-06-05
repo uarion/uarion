@@ -7,7 +7,7 @@ alwaysApply: true
 
 다음 명령은 사용자 확인 없이 **즉시 실행**한다.
 
-- `npm install`, `npm run dev`, `npm run build`, 기타 `npm run …`
-- `git` 하위 명령 전반 (`status`, `diff`, `log`, `add`, `commit`, `push`, `pull`, `checkout`, `branch` 등)
+- `cd` 전 변형 (`cd "c:\...\UARION"`, `cd '...'`, `cd c:\...`, `cd *`) / `Set-Location`, `npm install` (`-D` 포함), `npm run` / `test`, PowerShell 출력 (`Select-Object`, `Out-String` 등)
+- `git` 안전 명령만 (`status`, `diff`, `log`, `add`, `commit`, `checkout`, `branch` 등) — **`git push`는 자동 실행 금지**
 
 프로젝트 allowlist: `.cursor/permissions.json` · 전역: `~/.cursor/permissions.json`
