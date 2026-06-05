@@ -12,6 +12,8 @@ export {
   multiModalityCorrelationBoost,
 } from "./pipeline/fusion-risk";
 export { deriveTrustSignals } from "./trust-flow";
+export { deriveProductTrustActions } from "./trust-flow-integration";
+export type { ProductTrustAction, TrustActionKind } from "./trust-flow-integration";
 export type { TrustSignal, TrustSurface } from "./trust-flow";
 export { createDetectionAdapters, DETECTION_ADAPTER_KINDS } from "./pipeline/detection-registry";
 export type { DetectionAdapterKind } from "./pipeline/detection-registry";
