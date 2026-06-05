@@ -13,8 +13,8 @@ _마지막 저장: 2026-06-05 · 로컬만 (push 안 함)_
 | 항목 | 값 |
 |------|-----|
 | 브랜치 | `main` |
-| `origin/main` 대비 | **7커밋 앞** (`9b0b6f1` … `c70840f`) |
-| 마지막 커밋 | `c70840f` — 체크포인트 progress.md 시작 지점 정리 |
+| `origin/main` 대비 | **9커밋 앞** (base `9b0b6f1` — `git log origin/main..HEAD --oneline`) |
+| HEAD 확인 | `git log -1 --oneline` |
 | 테스트 / 빌드 | **77 passed**, `npm run build` 성공 |
 | 미추적 파일 | 루트 임시 PNG 4개 — **커밋 금지** |
 
@@ -26,6 +26,8 @@ e60b716  야간 보안 mock-only 가드
 328eea1  UUID/path 검증, admin noindex
 411e00f  야간 리포트 + adminAuth 테스트
 c70840f  체크포인트 progress.md 시작 지점 정리
+9c34cf0  progress 체크포인트 해시 동기화
+43413c7  체크포인트 최종 (이 섹션)
 ```
 
 ### 지금까지 완료 요약
@@ -49,13 +51,15 @@ c70840f  체크포인트 progress.md 시작 지점 정리
 | `e60b716` | 야간 보안 — mock-only 가드, API 검증, SECURITY/ARCHITECTURE 문서 |
 | `328eea1` | 입력 검증 — UUID, path traversal, admin noindex |
 | `411e00f` | progress 리포트, adminAuth 테스트 |
-| `c70840f` | 체크포인트 — 다음 작업 시작 지점 (로컬만, push 불필요) |
+| `c70840f` | 체크포인트 — 다음 작업 시작 지점 |
+| `9c34cf0` | progress 해시 동기화 (메모용) |
+| `43413c7` | 체크포인트 최종 — 이 섹션 (메모용) |
 
 ### 다음에 검토·결정해야 할 것
 
 | 우선 | 항목 | 질문 |
 |------|------|------|
-| 🔴 | **push** | 위 7커밋 중 `c70840f` 제외 6커밋 일괄 `git push` 할지 (체크포인트는 메모용) |
+| 🔴 | **push** | 핵심 6커밋(`86918d1`~`411e00f`) 일괄 push 검토. 체크포인트 3커밋은 선택 |
 | 🔴 | **`/admin` SSR 가드** | API만으로 충분한지, Supabase SSR + 쿠키 세션 가드 추가할지 (`@supabase/ssr` 미설치) |
 | 🟠 | **CSAM 분기** | `testBlockedHashes`를 `csam_branch` 시나리오에서만 허용 — 의도 확인 |
 | 🟠 | **Supabase SQL** | `supabase/setup-inspections-table.sql` SQL Editor 실행했는지 (영속화·이력) |
@@ -100,7 +104,7 @@ c70840f  체크포인트 progress.md 시작 지점 정리
 
 ## 진행 로그
 
-- [2026-06-05] **체크포인트** — progress.md 시작 지점 정리, 로컬 6커밋 저장 (push 없음)
+- [2026-06-05] **체크포인트** — progress.md「다음 작업 시작 지점」정리, 로컬 9커밋 (push 없음)
 - [2026-06-05] 야간: 보안·견고화·trust-flow·문서 (`e60b716`~`411e00f`)
 - [2026-06-05] 자가개선 FusionRisk v3 (`3885e0e`)
 - [2026-06-05] Phase 2 (`57b9dee`)
