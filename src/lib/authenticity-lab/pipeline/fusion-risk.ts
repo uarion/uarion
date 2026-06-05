@@ -1,5 +1,5 @@
 import type { DetectionResult, FusionBreakdown } from "../types";
-import type { AuthenticityPolicy } from "../policy/types";
+import type { AuthenticityPolicy, RiskThresholds } from "../policy/types";
 import type { FusionRiskEngine, MetadataSignals } from "./interfaces";
 
 const HIGH_RISK_LABELS = new Set([
@@ -7,6 +7,13 @@ const HIGH_RISK_LABELS = new Set([
   "impersonation_signal_mock",
   "high_risk_mock",
 ]);
+
+/** UARION — 탐지 confidence로 모달리티 점수 보정 (0.55~1.0 배율) */
+export function confidenceWeightedScore(mockScore: number, confidence: number): number {
+  const clamped = Math.min(1, Math.max(0, confidence));
+  const weight = 0.55 + 0.45 * clamped;
+  return mockScore * weight;
+}
 
 function computeMetadataBoost(signals: MetadataSignals | undefined): number {
   if (!signals) return 0;
@@ -26,9 +33,27 @@ function detectionLabelBoost(detections: DetectionResult[]): number {
   return Math.min(0.12, boost);
 }
 
+/** 2개 이상 모달리티가 고위험(≥0.4)이면 상관 부스트 */
+export function multiModalityCorrelationBoost(detections: DetectionResult[]): number {
+  const highCount = detections.filter((d) => d.mockScore >= 0.4).length;
+  return highCount >= 2 ? 0.05 : 0;
+}
+
+function weightedModalityScores(detections: DetectionResult[]): {
+  image: number;
+  video: number;
+  voice: number;
+} {
+  const scores = { image: 0, video: 0, voice: 0 };
+  for (const d of detections) {
+    scores[d.modality] = confidenceWeightedScore(d.mockScore, d.confidence);
+  }
+  return scores;
+}
+
 /**
- * UARION FusionRisk — proprietary weighted fusion.
- * Combines policy, hash, malware, modality scores, keyword hits, and metadata signals.
+ * UARION FusionRisk v3 — proprietary weighted fusion.
+ * Policy, hash, malware, confidence-weighted modality scores, keywords, metadata, labels, correlation.
  */
 export class UarionFusionRisk implements FusionRiskEngine {
   fuse(input: {
@@ -41,18 +66,13 @@ export class UarionFusionRisk implements FusionRiskEngine {
     policy: AuthenticityPolicy;
   }): FusionBreakdown {
     const w = input.policy.fusion_weights;
+    const { image, video, voice } = weightedModalityScores(input.detections);
 
-    const image = input.detections.find((d) => d.modality === "image")?.mockScore ?? 0;
-    const video = input.detections.find((d) => d.modality === "video")?.mockScore ?? 0;
-    const voice = input.detections.find((d) => d.modality === "voice")?.mockScore ?? 0;
-
-    const keywordBoost = Math.min(
-      w.keyword_boost_cap,
-      input.keywordHits.length * 0.05,
-    );
+    const keywordBoost = Math.min(w.keyword_boost_cap, input.keywordHits.length * 0.05);
 
     const metadataBoost = computeMetadataBoost(input.metadataSignals);
     const labelBoost = detectionLabelBoost(input.detections);
+    const correlationBoost = multiModalityCorrelationBoost(input.detections);
 
     const raw =
       input.policyScore * w.policy +
@@ -63,7 +83,8 @@ export class UarionFusionRisk implements FusionRiskEngine {
       voice * w.voice_detection +
       keywordBoost +
       metadataBoost +
-      labelBoost;
+      labelBoost +
+      correlationBoost;
 
     const fused = Math.min(1, Math.max(0, raw));
 
@@ -75,17 +96,21 @@ export class UarionFusionRisk implements FusionRiskEngine {
       video,
       voice,
       keywordBoost,
-      metadataBoost: metadataBoost + labelBoost,
+      metadataBoost,
+      labelBoost,
+      correlationBoost,
       raw,
       fused,
     };
   }
 }
 
-export function trustTierFromFusion(fused: number, thresholds: AuthenticityPolicy["risk_threshold"]) {
-  if (fused >= thresholds.audit_lock) return "restricted" as const;
-  if (fused >= thresholds.block) return "restricted" as const;
-  if (fused >= thresholds.review_required) return "review" as const;
-  if (fused >= thresholds.pre_block) return "caution" as const;
-  return "cleared_mock" as const;
+export type TrustTier = import("../types").TrustTier;
+
+export function trustTierFromFusion(fused: number, thresholds: RiskThresholds): TrustTier {
+  if (fused >= thresholds.audit_lock) return "restricted";
+  if (fused >= thresholds.block) return "restricted";
+  if (fused >= thresholds.review_required) return "review";
+  if (fused >= thresholds.pre_block) return "caution";
+  return "cleared_mock";
 }

@@ -32,6 +32,14 @@
   9. Lab UI 확장 — policy 가중치, 큐, 어댑터 선택, custom JSON, trust signals, 이력, CSAM 배너
   10. 테스트 **30 passed**, `npm run build` 성공
 
+- [2026-06-05] 완료: **자가개선 — 검증 로직·테스트·타입·문서**
+  1. FusionRisk **v3** — confidence-weighted modality, `labelBoost`/`correlationBoost` 분리, `FusionBreakdown` 타입 확장
+  2. 테스트 **30 → 59 passed** — fusion boundary, detection-registry, human-review, trust-flow status, transitions invalid, validate-descriptor edge, stub_external integration
+  3. 타입안정성 — `FusionBreakdown` import 정리, `zeroFusion()` 명시 타입, `index.ts` public export 확장
+  4. 문서 — `src/lib/authenticity-lab/README.md` 전면 갱신 (v3 공식, 엣지케이스, 타입 glossary)
+  5. Lab UI — Fusion 분해에 Labels / Correlation 행 추가
+  6. `npm run build` 성공
+
 ## 진행 중
 
 _(없음)_
@@ -63,7 +71,8 @@ _(없음)_
 ## push 대기 목록
 
 - [2026-06-06] push 대기: **Authenticity Lab Phase 1** (`86918d1`) — Policy-as-Code, 파이프라인, 테스트, `/admin/authenticity-lab`, vitest, permissions 갱신
-- [2026-06-05] push 대기: **Authenticity Lab Phase 2** — inspections 영속화, trust-flow, detection-registry, Lab UI 확장, 30 tests — 사용자 검토 후 push
+- [2026-06-05] push 대기: **Authenticity Lab Phase 2** (`57b9dee`) — inspections 영속화, trust-flow, detection-registry, Lab UI 확장
+- [2026-06-05] push 대기: **자가개선** — FusionRisk v3, 59 tests, 타입·문서·UI — 사용자 검토 후 push
 
 ---
 

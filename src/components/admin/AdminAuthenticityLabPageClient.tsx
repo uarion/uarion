@@ -511,6 +511,8 @@ export default function AdminAuthenticityLabPageClient() {
                       ["Voice", report.fusionBreakdown.voice],
                       ["Keywords", report.fusionBreakdown.keywordBoost],
                       ["Metadata", report.fusionBreakdown.metadataBoost],
+                      ["Labels", report.fusionBreakdown.labelBoost],
+                      ["Correlation", report.fusionBreakdown.correlationBoost],
                     ] as const
                   ).map(([k, v]) => (
                     <div key={k} className="rounded-lg border border-navy-700 bg-navy-800/50 px-3 py-2">

@@ -50,6 +50,18 @@ describe("runMockInspection integration (mock-only)", () => {
     expect(report.steps.some((s) => s.stepId === "hash_check" && !s.passed)).toBe(true);
   });
 
+  it("stub_external adapter elevates fusion vs mock", async () => {
+    const mockRun = await runMockInspection({ file: MOCK_SYNTHETIC_VIDEO });
+    const stubRun = await runMockInspection({
+      file: MOCK_SYNTHETIC_VIDEO,
+      detectionAdapterKind: "stub_external",
+    });
+    expect(stubRun.fusionScore).toBeGreaterThanOrEqual(mockRun.fusionScore);
+    expect(stubRun.steps.some((s) => s.message.includes("external_adapter_not_configured"))).toBe(
+      true,
+    );
+  });
+
   it("never processes real files — mockId required", async () => {
     const report = await runMockInspection({
       file: {

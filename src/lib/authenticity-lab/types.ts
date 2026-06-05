@@ -53,7 +53,12 @@ export type FusionBreakdown = {
   video: number;
   voice: number;
   keywordBoost: number;
+  /** metadata.synthetic / impersonation 신호 */
   metadataBoost: number;
+  /** high-risk detection label 누적 */
+  labelBoost: number;
+  /** 2+ 모달리티 고위험 시 상관 부스트 (UARION) */
+  correlationBoost: number;
   raw: number;
   fused: number;
 };

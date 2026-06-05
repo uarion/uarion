@@ -4,6 +4,7 @@ import { resolveInspectionPolicy } from "../policy/resolve";
 import { applyTransition, fusionEventForScore } from "../state-machine/transitions";
 import type {
   AuditEntry,
+  FusionBreakdown,
   InspectionReport,
   InspectionStatus,
   MockFileDescriptor,
@@ -244,7 +245,7 @@ export async function runMockInspection(input: RunMockInspectionInput): Promise<
   return buildReport(inspectionId, status, steps, auditTrail, fusionBreakdown);
 }
 
-function zeroFusion() {
+function zeroFusion(): FusionBreakdown {
   return {
     policy: 0,
     hash: 0,
@@ -254,6 +255,8 @@ function zeroFusion() {
     voice: 0,
     keywordBoost: 0,
     metadataBoost: 0,
+    labelBoost: 0,
+    correlationBoost: 0,
     raw: 0,
     fused: 0,
   };
@@ -264,7 +267,7 @@ function buildReport(
   status: InspectionStatus,
   steps: StepResult[],
   auditTrail: AuditEntry[],
-  fusionBreakdown: import("../types").FusionBreakdown,
+  fusionBreakdown: FusionBreakdown,
 ): InspectionReport {
   const policy = loadAuthenticityPolicy();
   const textBlob = JSON.stringify({ status, steps });

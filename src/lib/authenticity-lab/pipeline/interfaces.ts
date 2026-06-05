@@ -1,5 +1,6 @@
 import type {
   DetectionResult,
+  FusionBreakdown,
   HumanReviewDecision,
   MockFileDescriptor,
   Modality,
@@ -57,7 +58,7 @@ export interface FusionRiskEngine {
     keywordHits: string[];
     metadataSignals?: MetadataSignals;
     policy: AuthenticityPolicy;
-  }): import("../types").FusionBreakdown;
+  }): FusionBreakdown;
 }
 
 export interface HumanReviewAdapter {

@@ -12,6 +12,7 @@ describe("parseMockFileDescriptor", () => {
   it("rejects non-mock id", () => {
     const r = parseMockFileDescriptor({ ...MOCK_SAFE_IMAGE, mockId: "real_1" });
     expect(r.file).toBeNull();
+    expect(r.error).toBeTruthy();
   });
 
   it("rejects executable mime", () => {
@@ -19,6 +20,21 @@ describe("parseMockFileDescriptor", () => {
       ...MOCK_SAFE_IMAGE,
       mimeType: "application/octet-stream",
     });
+    expect(r.file).toBeNull();
+  });
+
+  it("rejects negative sizeBytes", () => {
+    const r = parseMockFileDescriptor({ ...MOCK_SAFE_IMAGE, sizeBytes: -1 });
+    expect(r.file).toBeNull();
+  });
+
+  it("rejects empty mockHash", () => {
+    const r = parseMockFileDescriptor({ ...MOCK_SAFE_IMAGE, mockHash: "" });
+    expect(r.file).toBeNull();
+  });
+
+  it("rejects non-object input", () => {
+    const r = parseMockFileDescriptor("not-json");
     expect(r.file).toBeNull();
   });
 });
