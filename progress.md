@@ -13,8 +13,8 @@ _마지막 저장: 2026-06-05 · 로컬만 (push 안 함)_
 | 항목 | 값 |
 |------|-----|
 | 브랜치 | `main` |
-| `origin/main` 대비 | **7커밋 앞** (`9b0b6f1` … `4e13555`) |
-| 마지막 커밋 | `4e13555` — 체크포인트 progress.md 시작 지점 정리 |
+| `origin/main` 대비 | **7커밋 앞** (`9b0b6f1` … `c70840f`) |
+| 마지막 커밋 | `c70840f` — 체크포인트 progress.md 시작 지점 정리 |
 | 테스트 / 빌드 | **77 passed**, `npm run build` 성공 |
 | 미추적 파일 | 루트 임시 PNG 4개 — **커밋 금지** |
 
@@ -25,7 +25,7 @@ _마지막 저장: 2026-06-05 · 로컬만 (push 안 함)_
 e60b716  야간 보안 mock-only 가드
 328eea1  UUID/path 검증, admin noindex
 411e00f  야간 리포트 + adminAuth 테스트
-4e13555  체크포인트 progress.md 시작 지점 정리
+c70840f  체크포인트 progress.md 시작 지점 정리
 ```
 
 ### 지금까지 완료 요약
@@ -49,13 +49,13 @@ e60b716  야간 보안 mock-only 가드
 | `e60b716` | 야간 보안 — mock-only 가드, API 검증, SECURITY/ARCHITECTURE 문서 |
 | `328eea1` | 입력 검증 — UUID, path traversal, admin noindex |
 | `411e00f` | progress 리포트, adminAuth 테스트 |
-| `5d73bc8` | 체크포인트 — 다음 작업 시작 지점 (로컬만, push 불필요) |
+| `c70840f` | 체크포인트 — 다음 작업 시작 지점 (로컬만, push 불필요) |
 
 ### 다음에 검토·결정해야 할 것
 
 | 우선 | 항목 | 질문 |
 |------|------|------|
-| 🔴 | **push** | 위 7커밋 중 `5d73bc8` 제외 6커밋 일괄 `git push` 할지 (체크포인트는 메모용) |
+| 🔴 | **push** | 위 7커밋 중 `c70840f` 제외 6커밋 일괄 `git push` 할지 (체크포인트는 메모용) |
 | 🔴 | **`/admin` SSR 가드** | API만으로 충분한지, Supabase SSR + 쿠키 세션 가드 추가할지 (`@supabase/ssr` 미설치) |
 | 🟠 | **CSAM 분기** | `testBlockedHashes`를 `csam_branch` 시나리오에서만 허용 — 의도 확인 |
 | 🟠 | **Supabase SQL** | `supabase/setup-inspections-table.sql` SQL Editor 실행했는지 (영속화·이력) |
