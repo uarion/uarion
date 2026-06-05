@@ -8,7 +8,7 @@ import { useLanguage } from "@/components/LanguageProvider";
 import UserAvatar from "@/components/UserAvatar";
 import { i18n } from "@/lib/i18n";
 import { getDisplayEmail } from "@/lib/profile";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 
 export default function HeaderAuth() {
   const { t } = useLanguage();
@@ -22,7 +22,7 @@ export default function HeaderAuth() {
     let mounted = true;
 
     async function loadSession() {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSupabase().auth.getSession();
       if (mounted) {
         setUser(data.session?.user ?? null);
         setLoading(false);
@@ -33,7 +33,7 @@ export default function HeaderAuth() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session: Session | null) => {
+    } = getSupabase().auth.onAuthStateChange((_event, session: Session | null) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
@@ -60,7 +60,7 @@ export default function HeaderAuth() {
 
   async function handleSignOut() {
     setMenuOpen(false);
-    await supabase.auth.signOut();
+    await getSupabase().auth.signOut();
     router.push("/");
     router.refresh();
   }

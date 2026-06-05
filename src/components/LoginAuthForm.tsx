@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 
 type Mode = "login" | "signup";
 
@@ -75,7 +75,7 @@ export default function LoginAuthForm() {
 
     try {
       if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await getSupabase().auth.signUp({
           email: trimmedEmail,
           password,
         });
@@ -104,7 +104,7 @@ export default function LoginAuthForm() {
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await getSupabase().auth.signInWithPassword({
         email: trimmedEmail,
         password,
       });

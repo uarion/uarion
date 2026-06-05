@@ -1,5 +1,5 @@
 import type { User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 
 export const AVATAR_BUCKET = "avatars";
 export const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
@@ -62,6 +62,7 @@ export async function uploadAvatar(
   const path = `${userId}/avatar.${normalizedExt}`;
 
   // upsert INSERT 시 RLS 충돌을 줄이기 위해 기존 파일을 먼저 삭제
+  const supabase = getSupabase();
   await supabase.storage.from(AVATAR_BUCKET).remove([path]);
 
   const { error: uploadError } = await supabase.storage
@@ -85,7 +86,7 @@ export async function updateProfileMetadata(
   const {
     data: { user },
     error: userError,
-  } = await supabase.auth.getUser();
+  } = await getSupabase().auth.getUser();
 
   if (userError) {
     throw userError;
@@ -95,7 +96,7 @@ export async function updateProfileMetadata(
   }
 
   const current = (user.user_metadata ?? {}) as UserProfileMetadata;
-  const { data, error } = await supabase.auth.updateUser({
+  const { data, error } = await getSupabase().auth.updateUser({
     data: {
       ...current,
       ...patch,

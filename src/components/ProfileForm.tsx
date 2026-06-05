@@ -12,7 +12,7 @@ import {
   uploadAvatar,
   validateAvatarFile,
 } from "@/lib/profile";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 
 export default function ProfileForm() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function ProfileForm() {
     let mounted = true;
 
     async function init() {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await getSupabase().auth.getSession();
       if (!mounted) return;
 
       if (!data.session?.user) {
@@ -48,7 +48,7 @@ export default function ProfileForm() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = getSupabase().auth.onAuthStateChange((_event, session) => {
       if (!session?.user) {
         router.replace("/login");
         return;
