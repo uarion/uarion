@@ -1,0 +1,13 @@
+---
+description: npm/git 명령은 승인 없이 바로 실행
+alwaysApply: true
+---
+
+# 터미널 자동 실행
+
+다음 명령은 사용자 확인 없이 **즉시 실행**한다.
+
+- `npm install`, `npm run dev`, `npm run build`, 기타 `npm run …`
+- `git` 하위 명령 전반 (`status`, `diff`, `log`, `add`, `commit`, `push`, `pull`, `checkout`, `branch` 등)
+
+프로젝트 allowlist: `.cursor/permissions.json` · 전역: `~/.cursor/permissions.json`

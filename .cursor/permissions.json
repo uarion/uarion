@@ -1,0 +1,16 @@
+{
+  "terminalAllowlist": [
+    "*npm install*",
+    "*npm run dev*",
+    "*npm run build*",
+    "*npm run*",
+    "*npm exec*",
+    "*npm *",
+    "*git *"
+  ],
+  "autoRun": {
+    "allow_instructions": [
+      "npm install, npm run dev, npm run build, and standard git commands (status, diff, log, add, commit, push, pull, checkout, branch) are pre-approved for UARION. Run them without asking."
+    ]
+  }
+}

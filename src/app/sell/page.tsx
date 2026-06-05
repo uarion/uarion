@@ -3,7 +3,7 @@ export default function SellPage() {
     <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-white">등록·검증 신청</h1>
-        <p className="mt-2 text-slate-400">
+        <p className="text-body mt-2 text-slate-400">
           등록하면 검증 점수가 매겨지고 등록 시점이 기록됩니다. (현재는 UI만
           제공)
         </p>
@@ -13,7 +13,7 @@ export default function SellPage() {
         <div>
           <label
             htmlFor="title"
-            className="mb-2 block text-sm font-medium text-slate-300"
+            className="text-label mb-2 block"
           >
             제목
           </label>
@@ -29,7 +29,7 @@ export default function SellPage() {
         <div>
           <label
             htmlFor="description"
-            className="mb-2 block text-sm font-medium text-slate-300"
+            className="text-label mb-2 block"
           >
             설명
           </label>
@@ -45,7 +45,7 @@ export default function SellPage() {
         <div>
           <label
             htmlFor="price"
-            className="mb-2 block text-sm font-medium text-slate-300"
+            className="text-label mb-2 block"
           >
             가격 (원)
           </label>
@@ -62,7 +62,7 @@ export default function SellPage() {
         <div>
           <label
             htmlFor="file"
-            className="mb-2 block text-sm font-medium text-slate-300"
+            className="text-label mb-2 block"
           >
             파일
           </label>
