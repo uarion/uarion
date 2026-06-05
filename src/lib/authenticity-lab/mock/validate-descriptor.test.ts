@@ -37,4 +37,9 @@ describe("parseMockFileDescriptor", () => {
     const r = parseMockFileDescriptor("not-json");
     expect(r.file).toBeNull();
   });
+
+  it("rejects path traversal in fileName", () => {
+    const r = parseMockFileDescriptor({ ...MOCK_SAFE_IMAGE, fileName: "../etc/passwd" });
+    expect(r.file).toBeNull();
+  });
 });

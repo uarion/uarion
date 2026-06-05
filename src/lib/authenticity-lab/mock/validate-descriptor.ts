@@ -23,6 +23,9 @@ export function parseMockFileDescriptor(raw: unknown): {
   if (!fileName || fileName.length > 200) {
     return { file: null, error: "Invalid fileName" };
   }
+  if (fileName.includes("..") || fileName.includes("/") || fileName.includes("\\")) {
+    return { file: null, error: "fileName must not contain path segments" };
+  }
   if (!ALLOWED_MIME_PREFIXES.some((p) => mimeType.startsWith(p))) {
     return { file: null, error: "mimeType must be image/*, video/*, or audio/*" };
   }

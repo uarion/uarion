@@ -3,6 +3,7 @@ import AdminAuthenticityLabPageClient from "@/components/admin/AdminAuthenticity
 export const metadata = {
   title: "Authenticity Lab | UARION Admin",
   description: "관리자 전용 UARION Authenticity Lab (mock)",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminAuthenticityLabPage() {

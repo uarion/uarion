@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdminBearerToken } from "@/lib/adminAuth";
 import { rejectProduct } from "@/lib/products-admin";
+import { isValidUuid } from "@/lib/validate-id";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -11,6 +12,9 @@ export async function POST(request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
+  if (!isValidUuid(id)) {
+    return NextResponse.json({ error: "Invalid product id" }, { status: 400 });
+  }
 
   try {
     const { error } = await rejectProduct(id);
