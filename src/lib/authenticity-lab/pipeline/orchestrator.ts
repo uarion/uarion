@@ -135,7 +135,9 @@ export async function runMockInspection(input: RunMockInspectionInput): Promise<
     log("MALWARE_BLOCKED", "PENDING", status);
     const del = await new MockSourceDelete().deleteSource(input.file, "malware_mock");
     steps.push(del);
+    const fromMalware = status;
     status = applyTransition(status, "SOURCE_DELETE");
+    log("SOURCE_DELETE", fromMalware, status);
     const fusion = new UarionFusionRisk().fuse({
       policyScore: policyResult.policyScore,
       hashScore: hashResult.hashScore,

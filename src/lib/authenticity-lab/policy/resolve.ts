@@ -1,3 +1,4 @@
+import { stripNonMockBlockedHashes } from "../safety/runtime-guard";
 import { loadAuthenticityPolicy } from "./loader";
 import type { AuthenticityPolicy } from "./types";
 
@@ -12,7 +13,7 @@ export function sanitizeTestBlockedHashes(hashes: string[] | undefined): string[
 export function resolveInspectionPolicy(options?: {
   testBlockedHashes?: string[];
 }): AuthenticityPolicy {
-  const base = loadAuthenticityPolicy();
+  const base = stripNonMockBlockedHashes(loadAuthenticityPolicy());
   const safe = sanitizeTestBlockedHashes(options?.testBlockedHashes);
   if (!safe.length) return base;
   return { ...base, blocked_hashes: safe };

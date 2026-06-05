@@ -13,6 +13,8 @@ Mock-only verification pipeline. **No real file upload, no external detection mo
 | Pipeline modules | `pipeline/*` | Interfaces + mock implementations |
 | Orchestrator | `pipeline/orchestrator.ts` | 10-step mock pipeline |
 | Trust flow | `trust-flow.ts` | market / registry / certification signals |
+| Trust integration | `trust-flow-integration.ts` | Product action types (Sell→Market 설계) |
+| Safety guards | `safety/runtime-guard.ts`, `safety/api-input.ts` | mock-only, API validation, CSAM 제한 |
 | Persistence | `src/lib/inspections-admin.ts` | Supabase `inspections` + audit log |
 | Admin API | `/api/admin/authenticity-lab/*` | scenarios, run, run-custom, history, policy |
 | Admin UI | `/admin/authenticity-lab` | Lab console (admin-only) |
@@ -78,6 +80,15 @@ Levels: `blocked` | `restricted` | `review` | `caution` | `cleared_mock`
 - `stub_external` elevates fusion vs `mock`
 - Expression guard blocks legal/certainty claims in report JSON
 - Invalid state transitions throw
+
+## Security
+
+상세: [`docs/AUTHENTICITY-LAB-SECURITY.md`](../../../docs/AUTHENTICITY-LAB-SECURITY.md)
+
+- Admin API: Bearer + `ADMIN_EMAIL`
+- `testBlockedHashes` → `csam_branch` only
+- Policy loader strips non-`MOCK_BLOCKED_HASH_*` from `blocked_hashes`
+- Real detection modes rejected at API
 
 ## Safety checklist
 

@@ -27,6 +27,7 @@ describe("runMockInspection integration (mock-only)", () => {
     const report = await runMockInspection({ file: MOCK_MALWARE });
     expect(report.status).toBe("SOURCE_DELETED");
     expect(report.steps.some((s) => s.stepId === "malware_scan" && !s.passed)).toBe(true);
+    expect(report.auditTrail.some((e) => e.action === "SOURCE_DELETE")).toBe(true);
   });
 
   it("synthetic video elevates fusion", async () => {

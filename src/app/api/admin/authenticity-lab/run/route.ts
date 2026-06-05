@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdminBearerToken } from "@/lib/adminAuth";
 import { getReviewQueueSnapshot, runLabInspection } from "@/lib/authenticity-lab-admin";
-import type { DetectionAdapterKind } from "@/lib/authenticity-lab/pipeline/detection-registry";
+import { validateRunScenarioBody, type RunScenarioBody } from "@/lib/authenticity-lab/safety/api-input";
 
 export async function POST(request: Request) {
   const auth = await verifyAdminBearerToken(request.headers.get("authorization"));
@@ -9,26 +9,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: auth.message }, { status: auth.status });
   }
 
-  let body: {
-    scenarioId?: string;
-    testBlockedHashes?: string[];
-    detectionAdapterKind?: DetectionAdapterKind;
-  };
-
+  let body: unknown;
   try {
-    body = (await request.json()) as typeof body;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  if (!body.scenarioId) {
-    return NextResponse.json({ error: "scenarioId is required" }, { status: 400 });
+  const validated = validateRunScenarioBody(body as RunScenarioBody);
+  if (!validated.ok) {
+    return NextResponse.json({ error: validated.error }, { status: validated.status });
   }
 
   const result = await runLabInspection({
-    scenarioId: body.scenarioId,
-    testBlockedHashes: body.testBlockedHashes,
-    detectionAdapterKind: body.detectionAdapterKind,
+    scenarioId: validated.scenarioId,
+    testBlockedHashes: validated.testBlockedHashes,
+    detectionAdapterKind: validated.detectionAdapterKind,
     adminEmail: auth.email,
   });
 

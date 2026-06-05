@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyAdminBearerToken } from "@/lib/adminAuth";
 import { parseMockFileDescriptor, runLabInspection } from "@/lib/authenticity-lab-admin";
-import type { DetectionAdapterKind } from "@/lib/authenticity-lab/pipeline/detection-registry";
+import { validateRunCustomBody, type RunCustomBody } from "@/lib/authenticity-lab/safety/api-input";
 
 export async function POST(request: Request) {
   const auth = await verifyAdminBearerToken(request.headers.get("authorization"));
@@ -9,27 +9,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: auth.message }, { status: auth.status });
   }
 
-  let body: {
-    mockFile?: unknown;
-    testBlockedHashes?: string[];
-    detectionAdapterKind?: DetectionAdapterKind;
-  };
-
+  let body: unknown;
   try {
-    body = (await request.json()) as typeof body;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const parsed = parseMockFileDescriptor(body.mockFile);
+  const validated = validateRunCustomBody(body as RunCustomBody);
+  if (!validated.ok) {
+    return NextResponse.json({ error: validated.error }, { status: validated.status });
+  }
+
+  const parsed = parseMockFileDescriptor(validated.mockFile);
   if (!parsed.file) {
     return NextResponse.json({ error: parsed.error ?? "Invalid mock descriptor" }, { status: 400 });
   }
 
   const result = await runLabInspection({
     mockFile: parsed.file,
-    testBlockedHashes: body.testBlockedHashes,
-    detectionAdapterKind: body.detectionAdapterKind,
+    detectionAdapterKind: validated.detectionAdapterKind,
     adminEmail: auth.email,
   });
 

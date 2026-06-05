@@ -2,7 +2,11 @@ import { runMockInspection } from "@/lib/authenticity-lab/pipeline/orchestrator"
 import type { DetectionAdapterKind } from "@/lib/authenticity-lab/pipeline/detection-registry";
 import { getHumanReviewQueue } from "@/lib/authenticity-lab/pipeline/human-review-queue";
 import { loadAuthenticityPolicy } from "@/lib/authenticity-lab/policy/loader";
-import { sanitizeTestBlockedHashes } from "@/lib/authenticity-lab/policy/resolve";
+import {
+  assertMockOnlyInspection,
+  resolveCsamTestHashes,
+  resolveDetectionAdapterKind,
+} from "@/lib/authenticity-lab/safety/runtime-guard";
 import { parseMockFileDescriptor } from "@/lib/authenticity-lab/mock/validate-descriptor";
 import { LAB_SCENARIOS, type LabScenario } from "@/lib/authenticity-lab/scenarios";
 import { deriveTrustSignals } from "@/lib/authenticity-lab/trust-flow";
@@ -42,17 +46,21 @@ export async function runLabInspection(options: RunLabOptions): Promise<RunLabRe
     return emptyResult("No mock file or scenario");
   }
 
-  const testHashes = sanitizeTestBlockedHashes(options.testBlockedHashes);
-  if (scenarioId === "csam_branch" && !testHashes.length) {
-    testHashes.push("MOCK_BLOCKED_HASH_001");
+  assertMockOnlyInspection(file);
+
+  const adapter = resolveDetectionAdapterKind(options.detectionAdapterKind);
+  if ("error" in adapter) {
+    return emptyResult(adapter.error);
   }
+
+  const testHashes = resolveCsamTestHashes(options.testBlockedHashes, scenarioId);
 
   try {
     const report = await runMockInspection({
       file,
       inspectionId: `insp_lab_${scenarioId ?? "custom"}_${Date.now()}`,
       testBlockedHashes: testHashes.length ? testHashes : undefined,
-      detectionAdapterKind: options.detectionAdapterKind ?? "mock",
+      detectionAdapterKind: adapter.kind,
     });
 
     const trustSignals = deriveTrustSignals(report);

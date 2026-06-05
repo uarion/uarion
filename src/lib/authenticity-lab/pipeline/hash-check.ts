@@ -3,8 +3,11 @@ import type { AuthenticityPolicy } from "../policy/types";
 import type { HashCheckAdapter } from "./interfaces";
 
 /**
- * Mock hash check with CSAM pre-block branch structure.
- * blocked_hashes in policy stays empty; tests inject MOCK_BLOCKED_HASH_* only.
+ * CSAM pre-block branch — 구조·주석만. 실제 해시 목록 금지.
+ *
+ * - 운영 policy `blocked_hashes`는 항상 [] (loader가 비-MOCK 해시 제거)
+ * - 테스트는 csam_branch 시나리오에서만 MOCK_BLOCKED_HASH_* 주입
+ * - 매칭 시 SOURCE_DELETED 경로로 분기 (mock)
  */
 export class MockHashCheck implements HashCheckAdapter {
   async check(file: MockFileDescriptor, policy: AuthenticityPolicy) {
