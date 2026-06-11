@@ -17,14 +17,21 @@ const inputClassName =
 const checkboxClassName =
   "mt-0.5 h-4 w-4 shrink-0 rounded border-navy-600 bg-navy-800 text-accent focus:ring-accent focus:ring-offset-navy-900";
 
-async function saveSignupConsent(accessToken: string): Promise<string | null> {
+function ConsentTag({ children }: { children: React.ReactNode }) {
+  return <span className="shrink-0 text-slate-400">{children}</span>;
+}
+
+async function saveSignupConsent(
+  accessToken: string,
+  marketingEmailAgreed: boolean,
+): Promise<string | null> {
   const res = await fetch("/api/consents", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({ ageConfirmed: true }),
+    body: JSON.stringify({ ageConfirmed: true, marketingEmailAgreed }),
   });
 
   const parsed = await readApiJsonResponse<{ error?: string; ok?: boolean }>(res, "동의 기록");
@@ -44,19 +51,21 @@ export default function LoginAuthForm() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
   const [agreeAge, setAgreeAge] = useState(false);
+  const [agreeMarketing, setAgreeMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<{
     type: "error" | "success";
     text: string;
   } | null>(null);
 
-  const allAgreed = agreeTerms && agreePrivacy && agreeAge;
-  const signupConsentComplete = allAgreed;
+  const allAgreed = agreeTerms && agreePrivacy && agreeAge && agreeMarketing;
+  const signupConsentComplete = agreeTerms && agreePrivacy && agreeAge;
 
   function resetConsent() {
     setAgreeTerms(false);
     setAgreePrivacy(false);
     setAgreeAge(false);
+    setAgreeMarketing(false);
   }
 
   function switchMode(next: Mode) {
@@ -72,6 +81,7 @@ export default function LoginAuthForm() {
     setAgreeTerms(checked);
     setAgreePrivacy(checked);
     setAgreeAge(checked);
+    setAgreeMarketing(checked);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -135,6 +145,8 @@ export default function LoginAuthForm() {
               privacy_version: privacyVersion,
               age_confirmed: true,
               agreed_at: agreedAt,
+              marketing_email_agreed: agreeMarketing,
+              ...(agreeMarketing ? { marketing_email_agreed_at: agreedAt } : {}),
             },
           },
         });
@@ -148,7 +160,10 @@ export default function LoginAuthForm() {
         }
 
         if (data.session?.access_token) {
-          const consentError = await saveSignupConsent(data.session.access_token);
+          const consentError = await saveSignupConsent(
+            data.session.access_token,
+            agreeMarketing,
+          );
           if (consentError) {
             setFeedback({
               type: "error",
@@ -330,9 +345,9 @@ export default function LoginAuthForm() {
             </div>
 
             <fieldset className="space-y-3 rounded-lg border border-navy-700 bg-navy-950/60 p-4">
-              <legend className="sr-only">회원가입 필수 동의</legend>
+              <legend className="sr-only">회원가입 동의</legend>
 
-              <label className="flex cursor-pointer items-start gap-3 border-b border-navy-700 pb-3 text-sm text-slate-300">
+              <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
                 <input
                   type="checkbox"
                   checked={allAgreed}
@@ -349,16 +364,19 @@ export default function LoginAuthForm() {
                   onChange={(e) => setAgreeTerms(e.target.checked)}
                   className={checkboxClassName}
                 />
-                <span>
-                  <span className="text-red-400">[필수]</span> 이용약관에 동의합니다{" "}
-                  <Link
-                    href="/terms"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent underline-offset-2 hover:underline"
-                  >
-                    보기
-                  </Link>
+                <span className="inline-flex flex-wrap items-center gap-x-1 leading-relaxed">
+                  <ConsentTag>[필수]</ConsentTag>
+                  <span className="whitespace-nowrap">
+                    이용약관에 동의합니다{" "}
+                    <Link
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent underline-offset-2 hover:underline"
+                    >
+                      보기
+                    </Link>
+                  </span>
                 </span>
               </label>
 
@@ -369,16 +387,19 @@ export default function LoginAuthForm() {
                   onChange={(e) => setAgreePrivacy(e.target.checked)}
                   className={checkboxClassName}
                 />
-                <span>
-                  <span className="text-red-400">[필수]</span> 개인정보 수집·이용에 동의합니다{" "}
-                  <Link
-                    href="/privacy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent underline-offset-2 hover:underline"
-                  >
-                    보기
-                  </Link>
+                <span className="inline-flex flex-wrap items-center gap-x-1 leading-relaxed">
+                  <ConsentTag>[필수]</ConsentTag>
+                  <span className="whitespace-nowrap">
+                    개인정보 수집·이용에 동의합니다{" "}
+                    <Link
+                      href="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent underline-offset-2 hover:underline"
+                    >
+                      보기
+                    </Link>
+                  </span>
                 </span>
               </label>
 
@@ -390,9 +411,28 @@ export default function LoginAuthForm() {
                   className={checkboxClassName}
                 />
                 <span>
-                  <span className="text-red-400">[필수]</span> 만 14세 이상입니다
+                  <ConsentTag>[필수]</ConsentTag> 만 14세 이상입니다
                 </span>
               </label>
+
+              <div className="space-y-2">
+                <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
+                  <input
+                    type="checkbox"
+                    checked={agreeMarketing}
+                    onChange={(e) => setAgreeMarketing(e.target.checked)}
+                    className={checkboxClassName}
+                  />
+                  <span>
+                    <ConsentTag>[선택]</ConsentTag> 이메일 광고성 정보 수신에 동의합니다.
+                  </span>
+                </label>
+                <p className="text-body-muted pl-7 text-xs leading-relaxed text-slate-500">
+                  UARION의 이벤트, 혜택, 뉴스레터, 창립 멤버 모집, 인증 신청, 마켓 오픈, 유료 상품 정보를
+                  이메일로 받을 수 있습니다. 동의하지 않아도 회원가입 및 기본 서비스 이용은 가능합니다.
+                  수신 동의는 마이페이지 또는 이메일 하단 수신거부 링크로 언제든 철회할 수 있습니다.
+                </p>
+              </div>
             </fieldset>
           </>
         )}

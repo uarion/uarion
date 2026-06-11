@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS public.user_consents (
   privacy_version text NOT NULL,
   agreed_at timestamptz NOT NULL DEFAULT now(),
   age_confirmed boolean NOT NULL DEFAULT false,
+  marketing_email_agreed boolean NOT NULL DEFAULT false,
+  marketing_email_agreed_at timestamptz,
 
   CONSTRAINT user_consents_user_id_unique UNIQUE (user_id),
   CONSTRAINT user_consents_age_confirmed_required CHECK (age_confirmed = true)
@@ -47,7 +49,9 @@ BEGIN
       terms_version,
       privacy_version,
       agreed_at,
-      age_confirmed
+      age_confirmed,
+      marketing_email_agreed,
+      marketing_email_agreed_at
     )
     VALUES (
       NEW.id,
@@ -57,7 +61,15 @@ BEGIN
         (NEW.raw_user_meta_data ->> 'agreed_at')::timestamptz,
         now()
       ),
-      COALESCE((NEW.raw_user_meta_data ->> 'age_confirmed')::boolean, false)
+      COALESCE((NEW.raw_user_meta_data ->> 'age_confirmed')::boolean, false),
+      COALESCE((NEW.raw_user_meta_data ->> 'marketing_email_agreed')::boolean, false),
+      CASE
+        WHEN COALESCE((NEW.raw_user_meta_data ->> 'marketing_email_agreed')::boolean, false)
+             AND NEW.raw_user_meta_data ? 'marketing_email_agreed_at'
+             AND btrim(COALESCE(NEW.raw_user_meta_data ->> 'marketing_email_agreed_at', '')) <> ''
+          THEN (NEW.raw_user_meta_data ->> 'marketing_email_agreed_at')::timestamptz
+        ELSE NULL
+      END
     )
     ON CONFLICT (user_id) DO NOTHING;
   END IF;

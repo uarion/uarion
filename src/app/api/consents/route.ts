@@ -6,6 +6,7 @@ import { verifyUserBearerToken } from "@/lib/userAuth";
 
 type ConsentBody = {
   ageConfirmed?: boolean;
+  marketingEmailAgreed?: boolean;
 };
 
 export async function POST(request: Request) {
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
     }
 
     const agreedAt = new Date().toISOString();
+    const marketingEmailAgreed = body.marketingEmailAgreed === true;
 
     const { error: insertError } = await supabase.from("user_consents").upsert(
       {
@@ -52,6 +54,8 @@ export async function POST(request: Request) {
         privacy_version: privacyVersion,
         agreed_at: agreedAt,
         age_confirmed: true,
+        marketing_email_agreed: marketingEmailAgreed,
+        marketing_email_agreed_at: marketingEmailAgreed ? agreedAt : null,
       },
       { onConflict: "user_id" },
     );
@@ -75,6 +79,8 @@ export async function POST(request: Request) {
       termsVersion,
       privacyVersion,
       agreedAt,
+      marketingEmailAgreed,
+      marketingEmailAgreedAt: marketingEmailAgreed ? agreedAt : null,
     });
   } catch (err) {
     console.error("[consents] unhandled error:", err);
