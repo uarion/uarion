@@ -104,6 +104,7 @@ c70840f  체크포인트 progress.md 시작 지점 정리
 
 ## 진행 로그
 
+- [2026-06-11] 완료: SEO 핵심 — layout OG/Twitter/metadataBase, og-image.png(1200×630), app/icon.png, robots.ts, sitemap.ts(승인 상품 동적), market/[id] generateMetadata(서버 page + MarketProductDetailClient 분리), `npm run build` 성공
 - [2026-06-11] 완료: `/`·`/market/[id]` HTTP 500 — 원인 `.next` dev 캐시 손상(구 dev 서버 + 캐시 삭제/재빌드 경합). `.next` 삭제 후 `npm run build`·dev/prod에서 `/`, `/market/[id]` 200 확인. 앱 코드(createPortal/Disclaimer) 문제 아님.
 - [2026-06-11] 완료: 회원가입 약관 동의 체크박스 + `/api/consents` + `setup-user-consents-table.sql`, `npm run build` 성공
 - [2026-06-11] 완료: 결제 API JSON 파싱 안전화 — `parseApiResponse.ts`, prepare/confirm 라우트 try/catch·서버 로그, 클라이언트 fetch text→JSON.parse, `npm run build` 성공

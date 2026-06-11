@@ -15,10 +15,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteTitle = "Uarion — AI 검증·인증 플랫폼";
+const siteDescription =
+  "AI 자동화·창작물을 등록·검증·인증하는 신뢰 플랫폼. 검증 점수와 등록 시점이 기록됩니다.";
+
 export const metadata: Metadata = {
-  title: "Uarion — AI 검증·인증 플랫폼",
-  description:
-    "AI 자동화·창작물을 등록·검증·인증하는 신뢰 플랫폼. 검증 점수와 등록 시점이 기록됩니다.",
+  metadataBase: new URL("https://uarion.com"),
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: "/",
+    siteName: "UARION",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
