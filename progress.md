@@ -104,6 +104,8 @@ c70840f  체크포인트 progress.md 시작 지점 정리
 
 ## 진행 로그
 
+- [2026-06-11] 완료: Phase 0 구매자 ZIP 다운로드 — `/api/download/[productId]` signed URL, success·상품 상세 UI, `npm run build` 성공
+- [2026-06-11] 완료: 결제 API JSON 파싱 안전화 — `parseApiResponse.ts`, prepare/confirm 라우트 try/catch·서버 로그, 클라이언트 fetch text→JSON.parse, `npm run build` 성공
 - [2026-06-05] **체크포인트** — progress.md「다음 작업 시작 지점」정리, 로컬 9커밋 (push 없음)
 - [2026-06-05] 야간: 보안·견고화·trust-flow·문서 (`e60b716`~`411e00f`)
 - [2026-06-05] 자가개선 FusionRisk v3 (`3885e0e`)

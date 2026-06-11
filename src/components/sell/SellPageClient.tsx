@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import {
   PRODUCT_CATEGORIES,
@@ -12,8 +12,22 @@ import {
 } from "@/lib/products";
 import { getSupabase } from "@/lib/supabaseClient";
 
+const PRODUCT_FILES_BUCKET = "product-files";
+const PRODUCT_FILE_MAX_BYTES = 200 * 1024 * 1024;
+
 const inputClassName =
   "w-full rounded-lg border border-navy-700 bg-navy-800 px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
+
+function sanitizeFileName(name: string): string {
+  const base = name.split(/[/\\]/).pop()?.trim() || "product.zip";
+  const sanitized = base.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return sanitized.length > 0 ? sanitized : "product.zip";
+}
+
+function isZipFile(file: File): boolean {
+  const lower = file.name.toLowerCase();
+  return lower.endsWith(".zip") || file.type === "application/zip" || file.type === "application/x-zip-compressed";
+}
 
 const initialForm: ProductFormValues = {
   title: "",
@@ -27,9 +41,12 @@ export default function SellPageClient() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [form, setForm] = useState<ProductFormValues>(initialForm);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [submitPhase, setSubmitPhase] = useState<"uploading" | "saving" | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [feedback, setFeedback] = useState<{
-    type: "error" | "success";
+    type: "error" | "success" | "info";
     text: string;
   } | null>(null);
 
@@ -83,26 +100,79 @@ export default function SellPageClient() {
       return;
     }
 
-    setSubmitting(true);
+    if (!selectedFile) {
+      setFeedback({ type: "error", text: "상품 파일(ZIP)을 선택해 주세요." });
+      return;
+    }
 
-    const { error } = await getSupabase().from("products").insert({
-      title: form.title.trim(),
-      description: form.description,
-      price: Number(form.price.trim()),
-      category: form.category,
+    if (!isZipFile(selectedFile)) {
+      setFeedback({ type: "error", text: "ZIP 파일만 업로드할 수 있습니다." });
+      return;
+    }
+
+    if (selectedFile.size > PRODUCT_FILE_MAX_BYTES) {
+      setFeedback({ type: "error", text: "파일 크기는 200MB 이하여야 합니다." });
+      return;
+    }
+
+    const productId = crypto.randomUUID();
+    const fileName = sanitizeFileName(selectedFile.name);
+    const storagePath = `${currentUser.id}/${productId}/${fileName}`;
+
+    setSubmitting(true);
+    setSubmitPhase("uploading");
+    setFeedback({
+      type: "info",
+      text: "파일을 업로드하는 중입니다. 잠시만 기다려 주세요.",
     });
 
-    setSubmitting(false);
+    const { error: uploadError } = await getSupabase()
+      .storage.from(PRODUCT_FILES_BUCKET)
+      .upload(storagePath, selectedFile);
 
-    if (error) {
+    if (uploadError) {
+      setSubmitting(false);
+      setSubmitPhase(null);
       setFeedback({
         type: "error",
-        text: error.message || "등록에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+        text: uploadError.message || "파일 업로드에 실패했습니다. 잠시 후 다시 시도해 주세요.",
       });
       return;
     }
 
+    setSubmitPhase("saving");
+    setFeedback({
+      type: "info",
+      text: "상품 정보를 저장하는 중입니다.",
+    });
+
+    const { error: insertError } = await getSupabase().from("products").insert({
+      id: productId,
+      title: form.title.trim(),
+      description: form.description,
+      price: Number(form.price.trim()),
+      category: form.category,
+      file_path: storagePath,
+    });
+
+    if (insertError) {
+      await getSupabase().storage.from(PRODUCT_FILES_BUCKET).remove([storagePath]);
+      setSubmitting(false);
+      setSubmitPhase(null);
+      setFeedback({
+        type: "error",
+        text: insertError.message || "등록에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+      });
+      return;
+    }
+
+    setSubmitting(false);
+    setSubmitPhase(null);
     setForm(initialForm);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     setFeedback({
       type: "success",
       text: "등록 완료, 관리자 승인 후 공개됩니다.",
@@ -155,7 +225,9 @@ export default function SellPageClient() {
             className={`mb-6 rounded-lg px-4 py-3 text-sm ${
               feedback.type === "success"
                 ? "border border-accent/30 bg-accent/10 text-accent"
-                : "border border-red-500/30 bg-red-500/10 text-red-300"
+                : feedback.type === "info"
+                  ? "border border-navy-600 bg-navy-800 text-slate-300"
+                  : "border border-red-500/30 bg-red-500/10 text-red-300"
             }`}
             role="alert"
           >
@@ -252,12 +324,44 @@ export default function SellPageClient() {
             </select>
           </div>
 
+          <div>
+            <label htmlFor="productFile" className="text-label mb-2 block">
+              상품 파일 (ZIP){" "}
+              <span className="text-slate-500">(필수, 최대 200MB)</span>
+            </label>
+            <input
+              ref={fileInputRef}
+              id="productFile"
+              name="productFile"
+              type="file"
+              accept=".zip,application/zip,application/x-zip-compressed"
+              required
+              disabled={submitting}
+              onChange={(e) => {
+                setSelectedFile(e.target.files?.[0] ?? null);
+                setFeedback(null);
+              }}
+              className={`${inputClassName} file:mr-4 file:rounded-md file:border-0 file:bg-accent file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-navy-950 hover:file:bg-accent-hover`}
+            />
+            {selectedFile && (
+              <p className="text-body-muted mt-2 text-sm text-slate-400">
+                선택됨: {selectedFile.name} ({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)
+              </p>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={submitting}
             className="w-full rounded-lg bg-accent px-6 py-3 text-base font-semibold text-navy-950 transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting ? "등록 중…" : "등록하기"}
+            {submitPhase === "uploading"
+              ? "파일 업로드 중…"
+              : submitPhase === "saving"
+                ? "상품 등록 중…"
+                : submitting
+                  ? "등록 중…"
+                  : "등록하기"}
           </button>
         </form>
       </div>

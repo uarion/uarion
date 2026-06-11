@@ -1,13 +1,79 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { categories, sortOptions } from "@/lib/market-categories";
-import { dummyProducts } from "@/lib/dummy-products";
+import { getSupabase } from "@/lib/supabaseClient";
+import type { Product } from "@/types/product";
+
+/** public.products row (setup-products-table.sql) */
+type DbProductRow = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  status: string;
+  created_at: string;
+};
+
+function mapRowToProduct(row: DbProductRow): Product {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    price: row.price,
+    verificationScore: 0,
+    certificationStatus: "검증됨",
+    registeredAt: row.created_at.slice(0, 10),
+    verificationReport: {
+      certificationLabel: "",
+      criteria: [],
+    },
+  };
+}
 
 export default function MarketContent() {
   const [category, setCategory] = useState<string>(categories[0]);
   const [sort, setSort] = useState<string>(sortOptions[0].id);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProducts() {
+      setLoading(true);
+      setError(null);
+
+      const { data, error: queryError } = await getSupabase()
+        .from("products")
+        .select("id, title, description, price, category, status, created_at")
+        .eq("status", "APPROVED")
+        .order("created_at", { ascending: false });
+
+      if (!mounted) {
+        return;
+      }
+
+      if (queryError) {
+        setError(queryError.message || "상품 목록을 불러오지 못했습니다.");
+        setProducts([]);
+        setLoading(false);
+        return;
+      }
+
+      setProducts((data ?? []).map(mapRowToProduct));
+      setLoading(false);
+    }
+
+    loadProducts();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <>
@@ -60,11 +126,21 @@ export default function MarketContent() {
         자리, 실제 정렬 미적용)
       </p>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {dummyProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {loading ? (
+        <p className="text-body-muted py-12 text-center">상품 목록을 불러오는 중…</p>
+      ) : error ? (
+        <p className="text-body-muted py-12 text-center text-red-300" role="alert">
+          {error}
+        </p>
+      ) : products.length === 0 ? (
+        <p className="text-body-muted py-12 text-center">등록된 상품이 없습니다.</p>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </>
   );
 }
