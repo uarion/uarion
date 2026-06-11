@@ -25,11 +25,14 @@ export default function UserAvatar({
 
   if (avatarUrl) {
     return (
-      <img
-        src={avatarUrl}
-        alt=""
-        className={`shrink-0 rounded-full object-cover ring-2 ring-navy-700 ${sizeClass} ${className}`}
-      />
+      <>
+        {/* eslint-disable-next-line @next/next/no-img-element -- user-supplied external avatar URL */}
+        <img
+          src={avatarUrl}
+          alt=""
+          className={`shrink-0 rounded-full object-cover ring-2 ring-navy-700 ${sizeClass} ${className}`}
+        />
+      </>
     );
   }
 

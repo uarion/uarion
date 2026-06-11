@@ -37,3 +37,8 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# local scratch (repo root)
+/dev-log.txt
+/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-*.png
+/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-* (*).png

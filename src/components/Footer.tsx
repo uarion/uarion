@@ -77,6 +77,8 @@ export default function Footer() {
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
             <div className="flex items-center gap-3">
+              {/* SVG logo — next/image는 SVG 기본 차단이라 img 유지 */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={HOME_ASSETS.logo} alt="" aria-hidden className="h-10 w-auto sm:h-11" />
               <span className="text-lg font-bold text-white sm:text-xl">UARION</span>
             </div>

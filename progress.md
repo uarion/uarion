@@ -104,7 +104,8 @@ c70840f  체크포인트 progress.md 시작 지점 정리
 
 ## 진행 로그
 
-- [2026-06-11] 완료: Phase 0 구매자 ZIP 다운로드 — `/api/download/[productId]` signed URL, success·상품 상세 UI, `npm run build` 성공
+- [2026-06-11] 완료: `/`·`/market/[id]` HTTP 500 — 원인 `.next` dev 캐시 손상(구 dev 서버 + 캐시 삭제/재빌드 경합). `.next` 삭제 후 `npm run build`·dev/prod에서 `/`, `/market/[id]` 200 확인. 앱 코드(createPortal/Disclaimer) 문제 아님.
+- [2026-06-11] 완료: 회원가입 약관 동의 체크박스 + `/api/consents` + `setup-user-consents-table.sql`, `npm run build` 성공
 - [2026-06-11] 완료: 결제 API JSON 파싱 안전화 — `parseApiResponse.ts`, prepare/confirm 라우트 try/catch·서버 로그, 클라이언트 fetch text→JSON.parse, `npm run build` 성공
 - [2026-06-05] **체크포인트** — progress.md「다음 작업 시작 지점」정리, 로컬 9커밋 (push 없음)
 - [2026-06-05] 야간: 보안·견고화·trust-flow·문서 (`e60b716`~`411e00f`)

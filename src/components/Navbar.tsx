@@ -39,6 +39,8 @@ function BrandLogo() {
       href="/"
       className="relative z-10 flex shrink-0 items-center gap-2 transition-opacity hover:opacity-95 sm:gap-3"
     >
+      {/* SVG logo — next/image는 SVG 기본 차단이라 img 유지 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={HOME_ASSETS.logo}
         alt=""
