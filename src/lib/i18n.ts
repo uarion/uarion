@@ -68,6 +68,10 @@ export const i18n = {
       "UARION 인증과 UARION 배지는 정부, 공공기관, 국가공인 인증이 아닙니다. UARION 인증은 AI 자산의 성능, 수익, 법적 적합성, 보안성, 저작권 적법성, 개인정보 보호 적합성을 절대적으로 보증하지 않습니다.",
       "UARION certification and the UARION badge are not government, public agency, or nationally accredited certifications. UARION certification does not absolutely guarantee performance, revenue, legal compliance, security, copyright legality, or privacy protection suitability of AI assets."
     ),
+    badgeDisclaimer: tr(
+      "UARION 인증은 플랫폼 내부 기준에 따른 참고용 표시이며, 콘텐츠의 성능·적법성·보안성을 법적으로 보증하지 않습니다.",
+      "UARION certification is a reference indicator under internal platform criteria and does not legally guarantee content performance, legality, or security."
+    ),
     inspectionTitle: tr("검사 항목", "Review items"),
     resultTitle: tr("결과 예시 카드", "Sample result card"),
     verifiedLabel: tr("UARION VERIFIED", "UARION VERIFIED"),

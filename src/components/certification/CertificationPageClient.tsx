@@ -47,6 +47,9 @@ export default function CertificationPageClient() {
               <p className="text-lg font-bold tracking-wide text-[#0085FF]">
                 {t(cert.verifiedLabel)}
               </p>
+              <p className="text-body-muted mt-2 text-xs leading-relaxed text-slate-500">
+                {t(cert.badgeDisclaimer)}
+              </p>
             </div>
             <dl className="space-y-3">
               {resultRows.slice(1).map((row) => (

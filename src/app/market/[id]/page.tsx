@@ -9,6 +9,7 @@ import { readApiJsonResponse } from "@/lib/parseApiResponse";
 import { requestProductDownloadUrl, startFileDownload } from "@/lib/productDownload";
 import { getSupabase } from "@/lib/supabaseClient";
 import type { Product } from "@/types/product";
+import VerificationBadgeDisclaimer from "@/components/VerificationBadgeDisclaimer";
 
 type DbProductRow = {
   id: string;
@@ -319,13 +320,16 @@ export default function MarketProductDetailPage() {
           <span className="text-6xl text-navy-700">◆</span>
         </div>
         <div className="p-8">
-          <div className="mb-4 flex flex-wrap gap-2">
-            <span className="text-label rounded-md bg-navy-800 px-2.5 py-1 font-semibold text-accent ring-1 ring-accent/25">
-              검증점수 {product.verificationScore}
-            </span>
-            <span className="text-label rounded-md bg-navy-800 px-2.5 py-1 text-slate-400 ring-1 ring-navy-600">
-              {product.certificationStatus}
-            </span>
+          <div className="mb-4">
+            <div className="flex flex-wrap gap-2">
+              <span className="text-label rounded-md bg-navy-800 px-2.5 py-1 font-semibold text-accent ring-1 ring-accent/25">
+                검증점수 {product.verificationScore}
+              </span>
+              <span className="text-label rounded-md bg-navy-800 px-2.5 py-1 text-slate-400 ring-1 ring-navy-600">
+                {product.certificationStatus}
+              </span>
+            </div>
+            <VerificationBadgeDisclaimer variant="inline" />
           </div>
           <p className="text-body-muted mb-2">상품 ID: {product.id}</p>
           <h1 className="mb-4 text-3xl font-bold text-white">{product.title}</h1>
@@ -397,14 +401,29 @@ export default function MarketProductDetailPage() {
               {downloading ? "다운로드 준비 중…" : "다운로드"}
             </button>
           ) : (
-            <button
-              type="button"
-              disabled={paying || checkingPurchase}
-              onClick={handlePurchase}
-              className="mt-10 w-full rounded-lg bg-accent px-6 py-3 text-base font-semibold text-navy-950 transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {paying ? "결제 준비 중…" : user ? "구매하기" : "로그인 후 구매하기"}
-            </button>
+            <>
+              <p className="mt-10 rounded-lg border border-navy-700 bg-navy-950/60 px-4 py-3 text-xs leading-relaxed text-slate-400 sm:text-sm">
+                본 상품은 디지털 콘텐츠로, 결제 후 다운로드가 시작되면 관련 법령에 따라 청약철회(환불)가
+                제한될 수 있습니다. 자세한 내용은{" "}
+                <Link
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent underline-offset-2 hover:underline"
+                >
+                  이용약관
+                </Link>
+                을 확인해 주세요.
+              </p>
+              <button
+                type="button"
+                disabled={paying || checkingPurchase}
+                onClick={handlePurchase}
+                className="mt-4 w-full rounded-lg bg-accent px-6 py-3 text-base font-semibold text-navy-950 transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {paying ? "결제 준비 중…" : user ? "구매하기" : "로그인 후 구매하기"}
+              </button>
+            </>
           )}
         </div>
       </article>
