@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { privacyVersion } from "@/content/privacy";
+import { termsVersion } from "@/content/terms";
 import { getAuthErrorMessage } from "@/lib/auth-errors";
+import { readApiJsonResponse } from "@/lib/parseApiResponse";
 import { getSupabase } from "@/lib/supabaseClient";
 
 type Mode = "login" | "signup";
@@ -11,22 +14,64 @@ type Mode = "login" | "signup";
 const inputClassName =
   "w-full rounded-lg border border-navy-700 bg-navy-800 px-4 py-2.5 text-white placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
 
+const checkboxClassName =
+  "mt-0.5 h-4 w-4 shrink-0 rounded border-navy-600 bg-navy-800 text-accent focus:ring-accent focus:ring-offset-navy-900";
+
+async function saveSignupConsent(accessToken: string): Promise<string | null> {
+  const res = await fetch("/api/consents", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ ageConfirmed: true }),
+  });
+
+  const parsed = await readApiJsonResponse<{ error?: string; ok?: boolean }>(res, "동의 기록");
+  if (!parsed.ok) {
+    return parsed.message;
+  }
+
+  return null;
+}
+
 export default function LoginAuthForm() {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [agreeAge, setAgreeAge] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<{
     type: "error" | "success";
     text: string;
   } | null>(null);
 
+  const allAgreed = agreeTerms && agreePrivacy && agreeAge;
+  const signupConsentComplete = allAgreed;
+
+  function resetConsent() {
+    setAgreeTerms(false);
+    setAgreePrivacy(false);
+    setAgreeAge(false);
+  }
+
   function switchMode(next: Mode) {
     setMode(next);
     setFeedback(null);
     setConfirmPassword("");
+    if (next === "login") {
+      resetConsent();
+    }
+  }
+
+  function setAgreeAll(checked: boolean) {
+    setAgreeTerms(checked);
+    setAgreePrivacy(checked);
+    setAgreeAge(checked);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -71,13 +116,27 @@ export default function LoginAuthForm() {
       return;
     }
 
+    if (mode === "signup" && !signupConsentComplete) {
+      setFeedback({ type: "error", text: "필수 항목에 동의해주세요." });
+      return;
+    }
+
     setLoading(true);
 
     try {
       if (mode === "signup") {
+        const agreedAt = new Date().toISOString();
         const { data, error } = await getSupabase().auth.signUp({
           email: trimmedEmail,
           password,
+          options: {
+            data: {
+              terms_version: termsVersion,
+              privacy_version: privacyVersion,
+              age_confirmed: true,
+              agreed_at: agreedAt,
+            },
+          },
         });
 
         if (error) {
@@ -88,7 +147,16 @@ export default function LoginAuthForm() {
           return;
         }
 
-        if (data.session) {
+        if (data.session?.access_token) {
+          const consentError = await saveSignupConsent(data.session.access_token);
+          if (consentError) {
+            setFeedback({
+              type: "error",
+              text: `가입은 완료되었으나 동의 기록 저장에 실패했습니다. (${consentError})`,
+            });
+            return;
+          }
+
           router.push("/");
           router.refresh();
           return;
@@ -101,6 +169,7 @@ export default function LoginAuthForm() {
         setMode("login");
         setPassword("");
         setConfirmPassword("");
+        resetConsent();
         return;
       }
 
@@ -238,31 +307,99 @@ export default function LoginAuthForm() {
         </div>
 
         {mode === "signup" && (
-          <div>
-            <label
-              htmlFor="confirmPassword"
-              className="mb-2 block text-sm font-medium text-slate-300"
-            >
-              비밀번호 확인
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={6}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="비밀번호를 다시 입력"
-              className={inputClassName}
-            />
-          </div>
+          <>
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="mb-2 block text-sm font-medium text-slate-300"
+              >
+                비밀번호 확인
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                minLength={6}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="비밀번호를 다시 입력"
+                className={inputClassName}
+              />
+            </div>
+
+            <fieldset className="space-y-3 rounded-lg border border-navy-700 bg-navy-950/60 p-4">
+              <legend className="sr-only">회원가입 필수 동의</legend>
+
+              <label className="flex cursor-pointer items-start gap-3 border-b border-navy-700 pb-3 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={allAgreed}
+                  onChange={(e) => setAgreeAll(e.target.checked)}
+                  className={checkboxClassName}
+                />
+                <span className="font-medium text-white">모두 동의</span>
+              </label>
+
+              <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  className={checkboxClassName}
+                />
+                <span>
+                  <span className="text-red-400">[필수]</span> 이용약관에 동의합니다{" "}
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent underline-offset-2 hover:underline"
+                  >
+                    보기
+                  </Link>
+                </span>
+              </label>
+
+              <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={agreePrivacy}
+                  onChange={(e) => setAgreePrivacy(e.target.checked)}
+                  className={checkboxClassName}
+                />
+                <span>
+                  <span className="text-red-400">[필수]</span> 개인정보 수집·이용에 동의합니다{" "}
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent underline-offset-2 hover:underline"
+                  >
+                    보기
+                  </Link>
+                </span>
+              </label>
+
+              <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={agreeAge}
+                  onChange={(e) => setAgreeAge(e.target.checked)}
+                  className={checkboxClassName}
+                />
+                <span>
+                  <span className="text-red-400">[필수]</span> 만 14세 이상입니다
+                </span>
+              </label>
+            </fieldset>
+          </>
         )}
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || (mode === "signup" && !signupConsentComplete)}
           className="w-full rounded-lg bg-accent px-6 py-3 text-base font-semibold text-navy-950 transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading

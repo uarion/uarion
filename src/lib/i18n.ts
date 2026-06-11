@@ -196,6 +196,7 @@ export const i18n = {
       "UARION certification is a private system, not a government-accredited certification. UARION reviews submitted materials and basic information under internal platform criteria; the badge does not absolutely guarantee performance, revenue, legal compliance, security, or copyright legality."
     ),
     copyright: tr("© 2026 UARION. 모든 권리 보유.", "© 2026 UARION. All rights reserved."),
+    legalNav: tr("법적 고지", "Legal"),
     links: {
       market: tr("마켓", "Market"),
       registry: tr("등록소", "Registry"),
@@ -207,6 +208,8 @@ export const i18n = {
       guide: tr("이용 가이드", "User guide"),
       faq: tr("자주 묻는 질문", "FAQ"),
       supportCenter: tr("고객센터", "Support center"),
+      terms: tr("이용약관", "Terms of Service"),
+      privacy: tr("개인정보처리방침", "Privacy Policy"),
     },
   },
   auth: {

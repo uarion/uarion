@@ -73,6 +73,11 @@ export const footerSupportLinks = [
   { key: "supportCenter" as const, href: "#" },
 ] as const;
 
+export const footerLegalLinks = [
+  { key: "terms" as const, href: "/terms" },
+  { key: "privacy" as const, href: "/privacy" },
+] as const;
+
 export const footerSocialLinks = [
   { label: "X", href: "#" },
   { label: "Discord", href: "#" },

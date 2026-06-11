@@ -6,6 +6,7 @@ import { useLanguage } from "@/components/LanguageProvider";
 import {
   HOME_ASSETS,
   footerCompanyLinks,
+  footerLegalLinks,
   footerServiceLinks,
   footerSocialLinks,
   footerSupportLinks,
@@ -63,6 +64,8 @@ const footerLinkLabels = {
   guide: i18n.footer.links.guide,
   faq: i18n.footer.links.faq,
   supportCenter: i18n.footer.links.supportCenter,
+  terms: i18n.footer.links.terms,
+  privacy: i18n.footer.links.privacy,
 } as const;
 
 export default function Footer() {
@@ -166,6 +169,20 @@ export default function Footer() {
         <p className="text-body-muted mt-10 mx-auto max-w-4xl border-t border-white/5 pt-6 text-center">
           {t(i18n.footer.legalDisclaimer)}
         </p>
+        <nav
+          aria-label={t(i18n.footer.legalNav)}
+          className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm"
+        >
+          {footerLegalLinks.map((link) => (
+            <Link
+              key={link.key}
+              href={link.href}
+              className="text-slate-400 transition-colors hover:text-accent"
+            >
+              {t(footerLinkLabels[link.key])}
+            </Link>
+          ))}
+        </nav>
         <p className="mt-4 text-center text-xs text-slate-500">
           {t(i18n.footer.copyright)}
         </p>
